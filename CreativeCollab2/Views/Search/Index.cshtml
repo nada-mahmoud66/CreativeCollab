@@ -1,0 +1,597 @@
+﻿@model vmTimeLine
+@{
+    Layout = null;
+    Layout = "TimeLineLayout";
+}
+
+<style>
+    #sepDiv{
+        background-color: darkgray;
+        color: white;
+       
+        border: 2px solid #ede9e9;
+        text-align: center;
+    }
+</style>
+        <section>
+            <div class="gap gray-bg">
+                <div class="container-fluid">
+
+                    <div class="col-lg-12">
+                        <div class="row" id="page-contents">
+                            <div class="col-lg-3">
+                                <aside class="sidebar static  ">
+                                    <div class="widget stick-widget">
+                                        <h4 class="widget-title">Shortcuts</h4>
+                                <ul class="naves">
+
+                                    <li>
+                                        <i class="ti-files"></i>
+                                        <a href="/UserProfile/Index" title="">My profile</a>
+                                    </li>
+                                    <li>
+                                        <i class="ti-comments-smiley"></i>
+                                        <a id="myLink" asp-controller="Chat" asp-action="Index"> Chats</a>
+
+                                    </li>
+                                </ul>
+                                    </div><!-- Shortcuts -->
+                                    <!-- recent activites -->
+                                    <!-- who's following -->
+                                </aside>
+                            </div><!-- sidebar -->
+
+                            <div class="col-lg-9">
+                              <div class="loadMoree">
+                                <div class="row" sty>
+
+
+                                @foreach (var post in Model.RecommendationPosts)
+                                {
+                                    <a href="#postModal_@post.PostId" data-toggle="modal">
+                                            <div class="col-4">
+                                                <div class=" card search ">
+                                                    <img src="~/images/post/@post.PostImage.ImageName"
+                                                        class="card-img-top" alt="" />
+                                                     <div class="card-title  ">
+
+                                                        <div class="we-info ">
+                                                            <div class="personinfo">
+                                                            <a asp-controller="Profile" asp-action="Index" asp-route-Id="@post.User.Id">
+                                                                <img src="~/images/user/@post.User.ProfileImage"
+                                                                        alt="">
+                                                            <p>@post.User.FirstName @post.User.LastName</p>
+                                                                </a>
+
+                                                            </div>
+
+                                                            <ul>
+
+                                                   
+                                                                <li>
+                                                            <a href="#ShowPostSearch" data-toggle="modal">
+                                                            <span class="comment" data-toggle="tooltip" title="" data-original-title="Comments">
+                                                                <i class="fa fa-comments-o"></i>
+                                                                <ins>@post.Comments.Count</ins>
+                                                            </span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <span class="like" data-post-id="@post.PostId" data-liked="@post.Likes.Select(a => a.UserId).ToList().Contains(ViewBag.Id).ToString().ToLower()">
+                                                                <i class="fa fa-heart @if (post.Likes.Select(a => a.UserId).ToList().Contains(ViewBag.Id)) {
+															    <text>filled</text>
+}"></i>
+                                                                <ins>@post.Likes.Count</ins>
+                                                            </span>
+                                                        </li>
+                                                            </ul>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    <div class="modal ShowPostSearch fade modal-fullscreen" id="postModal_@post.PostId" tabindex="-1" role="dialog"
+                                         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+
+                                            <div class="modal-content">
+
+                                                <div class="modal-body">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                                            style="width: 30px; height: 30px;">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                    <div class="central-meta item" data-postid="DeletedPostModal">
+                                                        <div class="user-post">
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="friend-info" data-post-id="@post.PostId">
+                                                                        <figure>
+                                                                            <a asp-controller="Profile" asp-action="Index" asp-route-Id="@post.User.Id" title="">
+
+                                                                                <img src="~/images/user/@post.User.ProfileImage" style="width: 45px; height: 35px;" alt="">
+                                                                            </a>
+                                                                        </figure>
+                                                                        <div class="friend-name">
+                                                                            <ins>
+                                                                                <a asp-controller="Profile" asp-action="Index" asp-route-Id="@post.User.Id" title="">
+                                                                                    @post.User.FirstName @post.User.LastName
+                                                                                </a>
+                                                                            </ins>
+                                                                            <span>published: @post.PostDateTime</span>
+                                                                        </div>
+                                                                        <div class="description">
+                                                                            <p class="editableParagraph">
+                                                                                @post.PostText
+                                                                            </p>
+                                                                        </div>
+
+                                                                        <div class="post-meta">
+                                                                            <img class="ImgPreview" src="~/images/post/@post.PostImage.ImageName" alt="">
+                                                                            <div class="we-video-info">
+                                                                                <ul>
+                                                                                   
+                                                                                    <li>
+                                                                                        <a href="#ShowPostSearch" data-toggle="modal">
+                                                                                            <span class="comment" data-toggle="tooltip" title="" data-original-title="Comments">
+                                                                                                <i class="fa fa-comments-o"></i>
+                                                                                                <ins>@post.Comments.Count</ins>
+                                                                                            </span>
+                                                                                        </a>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <span class="like" data-post-id="@post.PostId" data-liked="@post.Likes.Select(a => a.UserId).ToList().Contains(ViewBag.Id).ToString().ToLower()">
+                                                                                            <i class="fa fa-heart @if (post.Likes.Select(a => a.UserId).ToList().Contains(ViewBag.Id)) {
+															    <text>filled</text>
+}"></i>
+                                                                                            <ins>@post.Likes.Count</ins>
+                                                                                        </span>
+                                                                                    </li>
+
+
+                                                                                    @Html.Partial("pvShare", post.PostId)
+
+
+
+                                                                                </ul>
+
+
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+
+                                                                  
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="coment-area">
+                                                                        <ul class="we-comet  comments-list ">
+                                                                          
+                                                                            @foreach(Comment comment in post.Comments){
+                                                                                @if (comment.ParentCommentId == null)
+                                                                                {
+                                                                                    <div class="comet-avatar">
+                                                                                        <a asp-controller="Profile" asp-action="Index" asp-route-Id="@comment.User.Id" title="">
+
+                                                                                            <img src="~/images/user/@comment.User.ProfileImage" style="width: 40px; height: 40px; border-radius: 50%;" alt="">
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    <div class="we-comment ">
+                                                                                        <div class="coment-head">
+                                                                                            <h5>
+                                                                                                <a asp-controller="Profile" asp-action="Index" asp-route-Id="@comment.User.Id" title="">
+                                                                                                    @comment.User.FirstName
+                                                                                                    @comment.User.LastName
+                                                                                                </a>
+                                                                                            </h5>
+                                                                                            <span>@comment.CommentDate</span>
+                                                                                            <a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+                                                                                        </div>
+                                                                                        <p>
+                                                                                            @comment.CommentText
+                                                                                        </p>
+                                                                                    </div>
+                                                                                }
+                                                                                @* reply *@
+                                                                                <div>
+
+                                                                                    <ul>
+                                                                                        @foreach (var reply in post.Comments)
+                                                                                        {
+                                                                                            @if (reply.ParentCommentId == comment.CommentId)
+                                                                                            {
+
+                                                                                                <li class="comment" data-post-id="@reply.PostId">
+                                                                                                    <div class="comet-avatar">
+                                                                                                        <a asp-controller="Profile" asp-action="Index" asp-route-Id="@reply.User.Id" title="">
+
+                                                                                                            <img src="~/images/user/@reply.User.ProfileImage" alt="" style="width: 40px; height: 40px; border-radius: 50%;">
+                                                                                                        </a>
+                                                                                                    </div>
+                                                                                                    <div class="we-comment">
+                                                                                                        <div class="coment-head">
+                                                                                                            <h5><a asp-controller="Profile" asp-action="Index" asp-route-Id="@reply.User.Id" title="">@reply.User.FirstName</a></h5>
+                                                                                                            <span>@reply.CommentDate</span>
+                                                                                                            <a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+                                                                                                        </div>
+                                                                                                        <p>
+                                                                                                            @reply.CommentText
+                                                                                                        </p>
+                                                                                                    </div>
+                                                                                                </li>
+                                                                                                <br />
+                                                                                            }
+                                                                                        }
+                                                                                    </ul>
+                                                                                </div>
+                                                                            }
+                                                                            <br />
+                                                                            <li class="post-comment">
+                                                                              
+                                                                                <div class="post-comt-box">
+                                                                                    <form method="post">
+                                                                                        <textarea placeholder="Post your comment"></textarea>
+
+                                                                                        <button type="submit"></button>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                     } 
+                                    
+                             
+                               
+                                </div><!-- centerl meta -->
+                                   @if(Model.RecommendationPosts.Count >0){
+                                
+                            
+                                        <br />
+                                            <div id="sepDiv">
+                                            You may also like
+                                            </div>
+                                
+                                            <hr />
+                                 
+                                   }
+
+
+                            <div class="row" sty>
+
+
+                                @foreach (var post in Model.MyPosts)
+                                {
+                                    <a href="#postModal_@post.PostId" data-toggle="modal">
+                                        <div class="col-4">
+                                            <div class=" card search ">
+                                                <img src="~/images/post/@post.PostImage.ImageName"
+                                                     class="card-img-top" alt="" />
+                                                <div class="card-title  ">
+
+                                                    <div class="we-info ">
+                                                        <div class="personinfo">
+                                                            <a asp-controller="Profile" asp-action="Index" asp-route-Id="@post.User.Id">
+                                                                <img src="~/images/user/@post.User.ProfileImage"
+                                                                     alt="">
+                                                                <p>@post.User.FirstName @post.User.LastName</p>
+                                                            </a>
+
+                                                        </div>
+
+                                                        <ul>
+
+
+                                                            <li>
+                                                                <a href="#ShowPostSearch" data-toggle="modal">
+                                                                    <span class="comment" data-toggle="tooltip" title="" data-original-title="Comments">
+                                                                        <i class="fa fa-comments-o"></i>
+                                                                        <ins>@post.Comments.Count</ins>
+                                                                    </span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <span class="like" data-post-id="@post.PostId" data-liked="@post.Likes.Select(a => a.UserId).ToList().Contains(ViewBag.Id).ToString().ToLower()">
+                                                                    <i class="fa fa-heart @if (post.Likes.Select(a => a.UserId).ToList().Contains(ViewBag.Id)) {
+															    <text>filled</text>
+}"></i>
+                                                                    <ins>@post.Likes.Count</ins>
+                                                                </span>
+                                                            </li>
+                                                        </ul>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+
+                                    <div class="modal ShowPostSearch fade modal-fullscreen" id="postModal_@post.PostId" tabindex="-1" role="dialog"
+                                         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+
+                                            <div class="modal-content">
+
+                                                <div class="modal-body">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                                            style="width: 30px; height: 30px;">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                    <div class="central-meta item" data-postid="DeletedPostModal">
+                                                        <div class="user-post">
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="friend-info" data-post-id="@post.PostId">
+                                                                        <figure>
+                                                                            <a asp-controller="Profile" asp-action="Index" asp-route-Id="@post.User.Id" title="">
+
+                                                                                <img src="~/images/user/@post.User.ProfileImage" style="width: 45px; height: 35px;" alt="">
+                                                                            </a>
+                                                                        </figure>
+                                                                        <div class="friend-name">
+                                                                            <ins>
+                                                                                <a asp-controller="Profile" asp-action="Index" asp-route-Id="@post.User.Id" title="">
+                                                                                    @post.User.FirstName @post.User.LastName
+                                                                                </a>
+                                                                            </ins>
+                                                                            <span>published: @post.PostDateTime</span>
+                                                                        </div>
+                                                                        <div class="description">
+                                                                            <p class="editableParagraph">
+                                                                                @post.PostText
+                                                                            </p>
+                                                                        </div>
+
+                                                                        <div class="post-meta">
+                                                                            <img class="ImgPreview" src="~/images/post/@post.PostImage.ImageName" alt="">
+                                                                            <div class="we-video-info">
+                                                                                <ul>
+
+                                                                                    <li>
+                                                                                        <a href="#ShowPostSearch" data-toggle="modal">
+                                                                                            <span class="comment" data-toggle="tooltip" title="" data-original-title="Comments">
+                                                                                                <i class="fa fa-comments-o"></i>
+                                                                                                <ins>@post.Comments.Count</ins>
+                                                                                            </span>
+                                                                                        </a>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <span class="like" data-post-id="@post.PostId" data-liked="@post.Likes.Select(a => a.UserId).ToList().Contains(ViewBag.Id).ToString().ToLower()">
+                                                                                            <i class="fa fa-heart @if (post.Likes.Select(a => a.UserId).ToList().Contains(ViewBag.Id)) {
+															    <text>filled</text>
+}"></i>
+                                                                                            <ins>@post.Likes.Count</ins>
+                                                                                        </span>
+                                                                                    </li>
+
+
+                                                                                    @Html.Partial("pvShare", post.PostId)
+
+
+
+                                                                                </ul>
+
+
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="coment-area">
+                                                                        <ul class="we-comet  comments-list ">
+
+                                                                            @foreach (Comment comment in post.Comments)
+                                                                            {
+                                                                                @if (comment.ParentCommentId == null)
+                                                                                {
+                                                                                    <div class="comet-avatar">
+                                                                                        <a asp-controller="Profile" asp-action="Index" asp-route-Id="@comment.User.Id" title="">
+
+                                                                                            <img src="~/images/user/@comment.User.ProfileImage" style="width: 40px; height: 40px; border-radius: 50%;" alt="">
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    <div class="we-comment ">
+                                                                                        <div class="coment-head">
+                                                                                            <h5>
+                                                                                                <a asp-controller="Profile" asp-action="Index" asp-route-Id="@comment.User.Id" title="">
+                                                                                                    @comment.User.FirstName
+                                                                                                    @comment.User.LastName
+                                                                                                </a>
+                                                                                            </h5>
+                                                                                            <span>@comment.CommentDate</span>
+                                                                                            <a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+                                                                                        </div>
+                                                                                        <p>
+                                                                                            @comment.CommentText
+                                                                                        </p>
+                                                                                    </div>
+                                                                                }
+                                                                                @* reply *@
+                                                                                <div>
+
+                                                                                    <ul>
+                                                                                        @foreach (var reply in post.Comments)
+                                                                                        {
+                                                                                            @if (reply.ParentCommentId == comment.CommentId)
+                                                                                            {
+
+                                                                                                <li class="comment" data-post-id="@reply.PostId">
+                                                                                                    <div class="comet-avatar">
+                                                                                                        <a asp-controller="Profile" asp-action="Index" asp-route-Id="@reply.User.Id" title="">
+
+                                                                                                            <img src="~/images/user/@reply.User.ProfileImage" alt="" style="width: 40px; height: 40px; border-radius: 50%;">
+                                                                                                        </a>
+                                                                                                    </div>
+                                                                                                    <div class="we-comment">
+                                                                                                        <div class="coment-head">
+                                                                                                            <h5><a asp-controller="Profile" asp-action="Index" asp-route-Id="@reply.User.Id" title="">@reply.User.FirstName</a></h5>
+                                                                                                            <span>@reply.CommentDate</span>
+                                                                                                            <a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+                                                                                                        </div>
+                                                                                                        <p>
+                                                                                                            @reply.CommentText
+                                                                                                        </p>
+                                                                                                    </div>
+                                                                                                </li>
+                                                                                                <br />
+                                                                                            }
+                                                                                        }
+                                                                                    </ul>
+                                                                                </div>
+                                                                            }
+                                                                            <br />
+                                                                            <li class="post-comment">
+
+                                                                                <div class="post-comt-box">
+                                                                                    <form method="post">
+                                                                                        <textarea placeholder="Post your comment"></textarea>
+
+                                                                                        <button type="submit"></button>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+
+
+                            </div><!-- centerl meta -->
+                              </div>
+                                <!-- sidebar -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+         <!-- show post modal -->
+<!-- share Modal  -->
+@Html.Partial("pvShareModal", (List<ApplicationUser>)ViewBag.Followings)
+      
+@section scripts {
+ <script> 
+  	$(document).ready(function () {
+			$(document).on('click', '.like', function () {
+                console.log("i'm in ")
+				var icon = $(this).find('i');
+				var count = $(this).find('ins');
+				var postId = $(this).data('post-id');
+
+				if (icon.hasClass('filled')) {
+					// Unlike the post
+					icon.removeClass('filled');
+					count.text(parseInt(count.text()) - 1);
+					// Perform the unlike action (e.g., send request to server to remove like)
+					jQuery.ajax({
+						url: '/UserProfile/RemoveLike',
+						type: 'POST',
+						data: {
+							postId: postId,
+
+						},
+						success: function (response) {
+							console.log("hhhh");
+
+						},
+						error: function (xhr, status, error) {
+							console.log("hhhh2");
+						}
+					});
+				} else {
+					// Like the post
+					icon.addClass('filled');
+					count.text(parseInt(count.text()) + 1);
+
+					// Perform the like action (e.g., send request to server to add like)
+					jQuery.ajax({
+						url: '/UserProfile/AddLike',
+						type: 'POST',
+						data: {
+							postId: postId,
+
+						},
+						success: function (response) {
+							console.log("hhhh");
+
+						},
+						error: function (xhr, status, error) {
+							console.log("hhhh2");
+						}
+					});
+				}
+			});
+
+            $(document).on('keydown', '.post-comt-box textarea', function (event) {
+                if (event.keyCode == 13) {
+                    var comment = jQuery(this).val();
+                    var parent = jQuery(this).closest(".item");
+                    var postId = parent.find(".friend-info").data('post-id');
+                    var profileImage = '@ViewBag.ProfileImage';
+                    var firstName = '@ViewBag.FirstName';
+                    var lastName = '@ViewBag.LastName';
+                    var time = '@DateTime.Now';
+                    var src = "/images/user/";
+                    var comment_HTML = '<div class="comment" data-post-id="' + postId + '"><div class="comet-avatar"><a href="/UserProfile/Index" title=""><img style="width: 45px; height: 45px; border-radius:50px" src="' + src + profileImage + '" alt=""/></a></div><div class="we-comment"><div class="coment-head"><h5><a href="/UserProfile/Index" title="">' + firstName + ' ' + lastName + '</a></h5><span>' + time + '</span><a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a></div><p>' + comment + '</p></div></div>';
+
+                    parent.find(".comments-list").append('<li>' + comment_HTML + '</li>');
+
+                    jQuery.ajax({
+                        url: '/UserProfile/AddComment',
+                        type: 'POST',
+                        data: {
+                            postId: postId,
+                            text: comment
+                        },
+                        success: function (response) {
+                            console.log("hhhh");
+                            parent.find(".comment ins").text(response.commentCount);
+                        },
+                        error: function (xhr, status, error) {
+                            // Handle error
+                        }
+                    });
+
+                    jQuery(this).val('');
+                }
+            });
+     });
+
+
+    </script>
+    }
+
+
+

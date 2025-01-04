@@ -1,0 +1,81 @@
+﻿@model List<ApplicationUser>
+<div class="modal fade" id="exampleModalCenter" tabindex="-1"
+     role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="exampleModalLongTitle">
+                    Share Post to
+                </h5>
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="tab-pane active fade show " id="frends">
+                    <div class="row">
+                        <h4 style="font-size:30px; font-weight: bold;  width:81%; margin-left:15px;">Following:</h4>
+                        <div class="checkbox-wrapper-31" style="margin-top:8px;">
+
+                            <input type="checkbox" class="check" id="checkAll" />
+                            <svg viewBox="0 0 35.6 35.6">
+                                <circle class="background" cx="17.8" cy="17.8" r="17.8"></circle>
+                                <circle class="stroke" cx="17.8" cy="17.8" r="14.37"></circle>
+                                <polyline class="check" points="11.78 18.12 15.55 22.23 25.17 12.87"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <input filterinput type="text" placeholder="Search...">
+
+                    <ul class="send-ppl" style="margin-top: 8px;">
+                        @foreach (var friend in Model)
+                        {
+                            <li>
+                                <div class="n-pepls" data-user-id = "@friend.Id">
+
+                                    <figure>
+                                        <a href="time-line.html" title=""><img src="~/images/user/@friend.ProfileImage" alt=""></a>
+                                    </figure>
+                                    <div class="ppl-info">
+                                        <h4><a href="time-line.html" title="">@friend.FirstName @friend.LastName</a></h4>
+
+                                    </div>
+                                </div>
+                                <div class="checkbox-wrapper-31">
+
+                                    <input type="checkbox" class="check" />
+                                    <svg viewBox="0 0 35.6 35.6">
+                                        <circle class="background" cx="17.8" cy="17.8" r="17.8"></circle>
+                                        <circle class="stroke" cx="17.8" cy="17.8" r="14.37"></circle>
+                                        <polyline class="check" points="11.78 18.12 15.55 22.23 25.17 12.87"></polyline>
+                                    </svg>
+                                </div>
+                            </li>
+
+                        }
+                    </ul>
+
+                </div>
+            </div>
+            <div id="" class="modal-footer sendbtn">
+                <button id="sendshare" class="button success" data-post-id-share="">Send </button>
+
+            </div>
+        </div>
+    </div>
+    <div class="description">
+
+        <p>
+            World's most beautiful car in Curabitur <a href="#"
+                                                       title="">#test drive booking !</a> the most
+            beatuiful car available in america and the saudia
+            arabia, you can book your test drive by our official
+            website
+        </p>
+    </div>
+</div>

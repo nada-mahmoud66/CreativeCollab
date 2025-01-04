@@ -1,0 +1,69 @@
+﻿@model ApplicationUser
+<div id="groups" class="tab2-pane tab2-content">
+	<!-- created groups -->
+	<div class="central-meta">
+		<div class="groups">
+			<span><i class="fa fa-users"></i> Created Groups</span>
+			<a href="#CreateGroupMODAL" class="trigger-btn link"
+			   data-toggle="modal">
+				<button style="margin-top:-25px;">
+					<i class="fa fa-plus" aria-hidden="true"
+					   style="margin-right:5px ;"></i>Create
+					group
+				</button>
+			</a>
+
+		</div>
+	
+		<div class="searchjoined" style="margin-top: 10px;"></div>
+		<ul class="nearby-contct mmm" id="groupList1">
+			@foreach (var group in ViewBag.MyGroups)
+			{
+			<li>
+				<div class="nearly-pepls">
+					<figure>
+							<a href="/Group/ClickedGroup?groupId=@group.GroupId" title="">
+								<img src="~/images/groups/@group.CoverImage" style="width:45px;height:45px"  alt="">
+						   </a>
+					</figure>
+					<div class="pepl-info">
+							<h4><a href="/Group/ClickedGroup?groupId=@group.GroupId" title="">@group.GroupName</a></h4>
+
+							@* <em>@group.Users.Count Members</em> *@
+
+					</div>
+				</div>
+			</li>
+			}
+		</ul>
+		
+	</div>
+
+	<!-- joined Groups -->
+	<div class="central-meta">
+		<div class="groups">
+			<span><i class="fa fa-users"></i> joined Groups</span>
+		</div>
+		<div class="searchjoined" style="margin-top: 10px;"></div>
+		<ul class="nearby-contct" id >
+			@foreach (var group in ViewBag.Groups)
+			{
+			<li>
+				<div class="nearly-pepls">
+					<figure>
+							<a href="/Group/ClickedGroup?groupId=@group.GroupId" title="">
+							<img src="~/images/groups/@group.CoverImage" style="width:45px;height:45px" alt="">
+						</a>
+					</figure>
+					<div class="pepl-info">
+							<h4><a href="/Group/ClickedGroup?groupId=@group.GroupId" title="">@group.GroupName</a></h4>
+						@* <em>@group.Users.Count Members</em> *@
+
+					</div>
+				</div>
+			</li>
+			}
+		</ul>
+	</div><!-- photos -->
+</div>
+

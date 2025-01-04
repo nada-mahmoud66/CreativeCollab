@@ -1,0 +1,754 @@
+﻿@model serchResult
+@{
+	Layout = null;
+	Layout = "TimeLineLayout";
+}
+<!DOCTYPE html>
+<section>
+	<div class="gap gray-bg">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="row" id="page-contents">
+						<div class="col-lg-3">
+							<aside class="sidebar static">
+								<div class="widget  stick-widget">
+									<h4 class="widget-title">Shortcuts</h4>
+									<ul class="naves">
+
+										<li>
+											<i class="ti-image"></i>
+											<a href="/UserProfile/Index" title="">My profile</a>
+										</li>
+
+										<li>
+											<i class="ti-comments-smiley"></i>
+											<a id="myLink" asp-controller="Chat" asp-action="Index"> Chats</a>
+										</li>
+										
+
+
+									</ul>
+								</div><!-- Shortcuts -->
+
+							</aside>
+						</div><!-- sidebar -->
+						<div class="col-lg-6">
+
+							<!-- created groups -->
+
+							@if (Model.users.Count > 0)
+							{
+								<div class="central-meta">
+									<div class="groups">
+										<span><i class="fa fa-users"></i> Users results</span>
+									</div>
+
+									<div class="searchjoined" style="margin-top: 10px;"></div>
+									<ul class="nearby-contct mmm" id="groupList1" style="max-height: 300px; overflow-y: auto;">
+										@foreach (var result in Model.users)
+										{
+											<li>
+												<div class="nearly-pepls">
+													<figure>
+														<a asp-controller="Profile" asp-action="Index" asp-route-Id="@result.Id" title="">
+															<img src="~/images/user/@result.ProfileImage" style="width:45px;height:45px" alt="">
+														</a>
+													</figure>
+													<div class="pepl-info">
+														<h4><a asp-controller="Profile" asp-action="Index" asp-route-Id="@result.Id" title="">@result.FirstName @result.LastName</a></h4>
+													</div>
+												</div>
+											</li>
+										}
+
+									</ul>
+
+								</div>
+							}
+							@if (Model.groups.Count > 0)
+							{
+								<div class="central-meta">
+									<div class="groups">
+										<span><i class="fa fa-users"></i> group results</span>
+									</div>
+
+									<div class="searchjoined" style="margin-top: 10px;"></div>
+									<ul class="nearby-contct mmm" id="groupList1" style="max-height: 300px; overflow-y: auto;">
+
+										@foreach (var result in Model.groups)
+										{
+											<li>
+												<div class="nearly-pepls">
+													<figure>
+														<a href="/Group/ClickedGroup?groupId=@result.GroupId" title="">
+															<img src="~/images/groups/@result.CoverImage" style="width:45px;height:45px" alt="">
+														</a>
+													</figure>
+													<div class="pepl-info">
+														<h4><a href="/Group/ClickedGroup?groupId=@result.GroupId" title="">@result.GroupName</a></h4>
+													</div>
+												</div>
+											</li>
+										}
+									</ul>
+
+
+								</div>
+							}
+							<div class="central-meta">
+								<div class="groups">
+									<span><i class="fa fa-users"></i> posts results</span>
+								</div>
+								<br />
+
+							<div class="loadMoree tab2-pane active tab2-content"  id="timeline">
+								@{
+									var i = 0;
+								}
+								@foreach (var post in Model.posts)
+								{
+
+									<div class="central-meta item" data-postid="@post.PostId" style="display: inline-block;">
+										<div class="user-post">
+
+											<div class="friend-info" data-post-id="@post.PostId">
+												<figure>
+													<a asp-controller="Profile" asp-action="Index" asp-route-Id="@post.User.Id" title="">
+
+														<img src="~/images/user/@post.User.ProfileImage" style="width: 45px; height: 45px ; border-radius : 50%" alt="">
+													</a>
+												</figure>
+												<div class="friend-name">
+													<ins>
+														<a asp-controller="Profile" asp-action="Index" asp-route-Id="@post.User.Id" title="">
+															@post.User.FirstName @post.User.LastName
+														</a>
+														@if (post.GroupId != null)
+														{
+															<a asp-action="GroupMember" asp-controller="Group" asp-route-groupId="@post.GroupId" class="group-link">
+																<span class="group-arrow">  >  </span>@post.Group.GroupName
+															</a>
+														}
+													</ins>
+
+
+													<span>published: @post.PostDateTime</span>
+												</div>
+												<div class="post-meta">
+													<div class="description">
+
+														<p class="editableParagraph">
+															@post.PostText
+
+														</p>
+													</div>
+													<img title="@ViewBag.titels[i]" class="ImgPreview" src="~/images/post/@post.PostImage.ImageName" style="width: 870px; height: 470px;" alt="">
+													@{
+														i++;
+													}	<div class="we-video-info">
+														<ul>
+
+															<li>
+																<span class="comment" data-toggle="tooltip" title="" data-original-title="Comments">
+																	<i class="fa fa-comments-o"></i>
+																	<ins>@post.Comments.Count</ins>
+																</span>
+															</li>
+															<li>
+																<span class="like" data-post-id="@post.PostId" data-liked="@post.Likes.Select(a => a.UserId).ToList().Contains(ViewBag.Id).ToString().ToLower()">
+																	<i class="fa fa-heart @if (post.Likes.Select(a => a.UserId).ToList().Contains(ViewBag.Id)) {
+															    <text>filled</text>
+}"></i>
+																	<ins>@post.Likes.Count</ins>
+																</span>
+															</li>
+
+
+
+
+
+															@Html.Partial("pvShare", post.PostId)
+
+
+														</ul>
+
+
+													</div>
+
+													<!-- Button trigger modal -->
+													<!-- Modal -->
+
+
+												</div>
+											</div>
+
+
+											<div class="coment-area">
+												<ul class="we-comet comments-list ">
+
+													@foreach (var comment in post.Comments)
+													{
+														<li class="comment " data-post-id="@comment.PostId ">
+															@if (comment.ParentCommentId == null)
+															{
+																<div class="comet-avatar">
+																	<a asp-controller="Profile" asp-action="Index" asp-route-Id="@comment.User.Id" title="">
+
+																		<img src="~/images/user/@comment.User.ProfileImage" style="width: 45px; height: 45px; border-radius:50px" alt="">
+																	</a>
+																</div>
+																<div class="we-comment ">
+																	<div class="coment-head">
+																		<h5>
+																			<a asp-controller="Profile" asp-action="Index" asp-route-Id="@comment.User.Id" title="">
+																				@comment.User.FirstName
+																				@comment.User.LastName
+																			</a>
+																		</h5>
+																		<span>@comment.CommentDate</span>
+																		<a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+																	</div>
+																	<p>
+																		@comment.CommentText
+																	</p>
+																</div>
+															}
+															@* reply *@
+															<div>
+
+																<ul>
+																	@foreach (var reply in post.Comments)
+																	{
+																		@if (reply.ParentCommentId == comment.CommentId)
+																		{
+
+																			<li class="comment" data-post-id="@reply.PostId">
+																				<div class="comet-avatar">
+																					<a asp-controller="Profile" asp-action="Index" asp-route-Id="@reply.User.Id" title="">
+
+																						<img src="~/images/user/@reply.User.ProfileImage" alt="">
+																					</a>
+																				</div>
+																				<div class="we-comment">
+																					<div class="coment-head">
+																						<h5><a asp-controller="Profile" asp-action="Index" asp-route-Id="@reply.User.Id" title="">@reply.User.FirstName</a></h5>
+																						<span>@reply.CommentDate</span>
+																						<a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+																					</div>
+																					<p>
+																						@reply.CommentText
+																					</p>
+																				</div>
+																			</li>
+																		}
+																	}
+																</ul>
+															</div>
+														</li>
+
+
+													}
+
+
+
+												</ul>
+
+												<ul class="we-comet">
+													<li>
+														<a href="#" title="" class="showmore underline">
+															more
+															comments
+														</a>
+													</li>
+													<li class="post-comment">
+														<div class="comet-avatar">
+															<img src="~/images/user/@ViewBag.ProfileImage" style="width: 80px; height: 40px;" alt="">
+														</div>
+														<div class="post-comt-box">
+															<form method="post">
+																<textarea placeholder="Post your comment"></textarea>
+																<div class="add-smiles">
+																	<span class="em em-expressionless" title="add icon"></span>
+																</div>
+																<button type="submit"></button>
+															</form>
+														</div>
+													</li>
+												</ul>
+											</div>
+
+
+
+										</div>
+									</div>
+								}
+							</div>
+
+								</div>
+							</div>
+						<div class="col-lg-3">
+							<aside class="sidebar static">
+
+							</aside>
+							@Html.Partial("pvSideBarFollowingList", new ApplicationUser { Followings = ViewBag.Followings })
+
+						</div><!-- sidebar -->
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+</section>
+<!-- share Modal  -->
+@Html.Partial("pvShareModal", (List<ApplicationUser>)ViewBag.Followings)
+@section scripts {
+	@* delete and add post *@
+	<script>
+		$(document).ready(function () {
+			//delete post
+
+			$(document).on('click', '.deletePostBtn', function () {
+				// Your code here
+				console.log("one 1 ");
+				const postId = $(this).closest('.central-meta').data('postid');
+				console.log("one");
+				// Set up the modal with the specific post ID
+				$('#myModal').data('postid', postId).modal('show');
+			});
+
+			// Event listener for confirm delete button in modal
+			$('#confirmDelete').on('click', function () {
+				console.log("two");
+				const postId = $('#myModal').data('postid');
+
+				// Perform deletion and remove the post element from the GUI
+				deletePost(postId);
+				$('#myModal').modal('hide');
+				$('body').removeClass('modal-open');
+				$('.modal-backdrop').remove();
+				// Hide the modal
+				console.log("oyuy");
+				console.log("postID: " + postId);
+
+				jQuery.ajax({
+					url: '/UserProfile/RemovePost',
+					type: 'POST',
+					data: {
+						postId: postId
+					},
+					success: function (response) {
+						console.log("hhhh");
+
+					},
+					error: function (xhr, status, error) {
+						// Handle error
+						console.log("hhhha354");
+					}
+				});
+
+
+			});
+			// Ensure removal of the modal backdrop
+
+			function deletePost(postId) {
+				// Remove the post element from the GUI
+				$(`.central-meta[data-postid=${postId}]`).remove();
+				console.log("three");
+
+			}
+
+
+			$('.PostButton').on('click', function () {
+				// Get the entered text
+				var enteredText = $('#POSTMODAL textarea').val();
+				console.log("farahyasserrr");
+				// Get the uploaded image file
+				var uploadedImage = $('#POSTMODAL #picture__input')[0].files[0];
+
+				var profileImage = '@ViewBag.ProfileImage';
+				var firstName = '@ViewBag.FirstName';
+				var lastName = '@ViewBag.LastName';
+				var dateTime = '@DateTime.Now ';
+
+				// Create a new post div with the entered text and image
+
+				var formData = new FormData();
+				//var formData = new FormData();
+				formData.append('uploadedImage', $('#POSTMODAL #picture__input')[0].files[0]);
+				formData.append('enteredText', enteredText);
+				formData.append('Date', dateTime);
+				$.ajax({
+					url: '/UserProfile/AddPost',
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function (response) {
+						console.log("Post added successfully");
+						var postId = response.postID;
+						var titels = response.titels;
+
+						console.log("post id :");
+
+						console.log(postId);
+						var newPostDiv = $('<div class="central-meta item" data-postid="' + postId + '">\
+												<div class="user-post">\
+													<div id="container">\
+														<div id="menu-wrap">\
+															<input type="checkbox" class="toggler">\
+															<div class="dots">\
+																<div></div>\
+															</div>\
+															<div class="menu">\
+																<div>\
+																	<ul>\
+																		<li>\
+																			<a href="#EDITMODAL" class="trigger-btn link editTextButton"\
+																				data-toggle="modal"\
+																				style="margin-left: -20px;">\
+																				<i class="fas fa-pen mx-2"></i>Edit\
+																			</a>\
+																		</li>\
+																		<li>\
+																			<a href="#myModal" class="trigger-btn link deletePostBtn"\
+																				data-toggle="modal">\
+																				<i class="fas fa-trash mx-2  "></i>Delete\
+																			</a>\
+																		</li>\
+																	</ul>\
+																</div>\
+															</div>\
+														</div>\
+													</div>\
+													<div class="friend-info" data-post-id="' + postId + '">\
+														<figure>\
+															<img src="/images/user/' + profileImage + '" alt="">\
+														</figure>\
+														<div class="friend-name">\
+															<ins><a href="time-line.html" title="">' + firstName + ' ' + lastName + '</a></ins>\
+															<span>published: ' + dateTime + '</span>\
+														</div>\
+														<div class="post-meta">\
+				<div class="description">\
+																<p class="editableParagraph">' + enteredText + '</p>\
+															</div>\
+															<img title="'+ titels + '" class="ImgPreview" src="' + (uploadedImage ? URL.createObjectURL(uploadedImage) : '') + '" style="width: 870px; height: 470px;" alt="">\
+															<div class="we-video-info">\
+																<ul>\
+																	<li>\
+																		<span class="views" data-toggle="tooltip" title="views">\
+																			<i class="fa fa-eye"></i>\
+																			<ins>0</ins>\
+																		</span>\
+																	</li>\
+																	<li>\
+																		<span class="comment" data-toggle="tooltip" title="Comments">\
+																			<i class="fa fa-comments-o"></i>\
+																			<ins>0</ins>\
+																		</span>\
+																	</li>\
+																	<li>\
+																			 <span class="like" data-post-id="' + postId + '" data-liked="false">\
+										<i class="fa fa-heart"></i>\
+										<ins>0</ins>\
+									</span>\
+																	</li>\
+																	<li class="social-media">\
+																		<div class="menu">\
+																			<div class="btn trigger">\
+																				<i class="fa fa-share-alt" data-toggle="modal" data-target="#exampleModalCenter"></i>\
+																			</div>\
+																		</div>\
+																	</li>\
+																</ul>\
+															</div>\
+														</div>\
+													</div>\
+													<div class="coment-area">\
+														<ul class="we-comet comments-list">\
+															<!-- Add comments here if needed -->\
+														</ul>\
+														<ul class="we-comet">\
+															<li>\
+																<a href="#" title="" class="showmore underline">\
+																	more comments\
+																</a>\
+															</li>\
+															<li class="post-comment">\
+																<div class="comet-avatar">\
+																	<img src="/images/user/' + profileImage + '" alt="">\
+																</div>\
+																<div class="post-comt-box">\
+																	<form method="post">\
+																		<textarea placeholder="Post your comment"></textarea>\
+																		<div class="add-smiles">\
+																			<span class="em em-expressionless" title="add icon"></span>\
+																		</div>\
+																		<div class="smiles-bunch">\
+																			<i class="em em---1"></i>\
+																			<i class="em em-smiley"></i>\
+																			<i class="em em-anguished"></i>\
+																			<i class="em em-laughing"></i>\
+																			<i class="em em-angry"></i>\
+																			<i class="em em-astonished"></i>\
+																			<i class="em em-blush"></i>\
+																			<i class="em em-disappointed"></i>\
+																			<i class="em em-worried"></i>\
+																			<i class="em em-kissing_heart"></i>\
+																			<i class="em em-rage"></i>\
+																			<i class="em em-stuck_out_tongue"></i>\
+																		</div>\
+																		<button type="submit"></button>\
+																	</form>\
+																</div>\
+															</li>\
+														</ul>\
+													</div>\
+												</div>\
+											</div>');
+
+						// Append the newPostDiv to the document body or any other container you desire
+						$('.loadMoree').prepend(newPostDiv);
+
+						// Hide the modal after posting
+						$('#POSTMODAL').modal('hide');
+						$('body').removeClass('modal-open');
+						$('.modal-backdrop').remove();
+
+					},
+					error: function (xhr, status, error) {
+						console.log("Error adding post: " + error);
+					}
+				});
+
+
+
+
+			});
+
+
+		});
+	</script>
+	@* update post *@
+	<script>
+		$(document).ready(function () {
+			// update edited text
+			$('.loadMoree').on('click', '.editTextButton', function () {
+				var post = $(this).closest('.central-meta');
+				const postId = post.data('postid');
+				var editableParagraph = post.find('.editableParagraph');
+				var postImage = post.find('.ImgPreview');
+				var editTextarea = $('#EDITMODAL').find('.editTextarea');
+
+				// Set the initial values in the modal
+				editTextarea.val(editableParagraph.text());
+				$('.modal-image').attr('src', postImage.attr('src'));
+
+				// Event listener for updating text
+				$('.updateButtonMODAL').on('click', function (e) {
+					e.preventDefault();
+
+					// Retrieve the new text from the textarea
+					var newText = editTextarea.val();
+
+					// Update the paragraph with the new text
+					editableParagraph.text(newText);
+
+					// Close the modal
+					$('#EDITMODAL').modal('hide');
+					$('body').removeClass('modal-open');
+					$('.modal-backdrop').remove();
+
+					// Send an AJAX request to update the post
+					$.ajax({
+						url: '/UserProfile/UpdatePost',
+						type: 'POST',
+						data: {
+							postId: postId,
+							NewText: newText,
+						},
+						success: function (response) {
+							console.log("Post updated successfully");
+						},
+						error: function (xhr, status, error) {
+							console.error("Error updating post: " + error);
+						}
+					});
+				});
+			});
+		});
+
+	</script>
+	@* like and comment *@
+	<script>
+
+
+		$(document).ready(function () {
+			$('.loadMoree').on('click', '.like', function () {
+				var icon = $(this).find('i');
+				var count = $(this).find('ins');
+				var postId = $(this).data('post-id');
+
+				if (icon.hasClass('filled')) {
+					// Unlike the post
+					icon.removeClass('filled');
+					count.text(parseInt(count.text()) - 1);
+					// Perform the unlike action (e.g., send request to server to remove like)
+					jQuery.ajax({
+						url: '/UserProfile/RemoveLike',
+						type: 'POST',
+						data: {
+							postId: postId,
+
+						},
+						success: function (response) {
+							console.log("hhhh");
+
+						},
+						error: function (xhr, status, error) {
+							console.log("hhhh2");
+						}
+					});
+				} else {
+					// Like the post
+					icon.addClass('filled');
+					count.text(parseInt(count.text()) + 1);
+
+					// Perform the like action (e.g., send request to server to add like)
+					jQuery.ajax({
+						url: '/UserProfile/AddLike',
+						type: 'POST',
+						data: {
+							postId: postId,
+
+						},
+						success: function (response) {
+							console.log("hhhh");
+
+						},
+						error: function (xhr, status, error) {
+							console.log("hhhh2");
+						}
+					});
+				}
+			});
+		});
+
+
+
+
+		$(document).on('keydown', '.post-comt-box textarea', function (event) {
+			if (event.keyCode == 13) {
+				var comment = jQuery(this).val();
+				var parent = jQuery(this).closest(".item");
+				var postId = parent.find(".friend-info").data('post-id');
+				var profileImage = '@ViewBag.ProfileImage';
+				var firstName = '@ViewBag.FirstName';
+				var lastName = '@ViewBag.LastName';
+				var time = '@DateTime.Now';
+				var src = "/images/user/";
+				var comment_HTML = '<div class="comment" data-post-id="' + postId + '"><div class="comet-avatar"><a href="/UserProfile/Index" title=""><img style="width: 45px; height: 45px; border-radius:50px" src="' + src + profileImage + '" alt=""/></a></div><div class="we-comment"><div class="coment-head"><h5><a href="/UserProfile/Index" title="">' + firstName + ' ' + lastName + '</a></h5><span>' + time + '</span><a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a></div><p>' + comment + '</p></div></div>';
+
+				parent.find(".comments-list").append('<li>' + comment_HTML + '</li>');
+
+				jQuery.ajax({
+					url: '/UserProfile/AddComment',
+					type: 'POST',
+					data: {
+						postId: postId,
+						text: comment
+					},
+					success: function (response) {
+						console.log("hhhh");
+						parent.find(".comment ins").text(response.commentCount);
+					},
+					error: function (xhr, status, error) {
+						// Handle error
+					}
+				});
+
+				jQuery(this).val('');
+			}
+		});
+
+
+	</script>
+	<script>
+		$(document).ready(function () {
+			// Use event delegation for dynamically added elements
+			$(document).on('click', '.unfollow-btn', function (event) {
+				// Prevent the default behavior of the anchor tag
+				event.preventDefault();
+				var followingId = $(this).data('followingid');
+
+				if ($(this).text().trim() !== "Follow") {
+					$.ajax({
+						url: '@Url.Action("RemoveFollowing", "UserProfile")',
+						type: 'POST',
+						data: { FollowingId: followingId },
+						success: function (response) {
+							if (response.success) {
+								console.log("okkkkkkkkkkkkkk");
+							} else {
+								console.log("not okkkkkkkkkkkkkk");
+							}
+						},
+						error: function (xhr, status, error) {
+
+						}
+					});
+
+					$(this).text('Follow');
+					$('#FollowTab').hide();
+					var countElement = $('#followersCount');
+					var currentCount = parseInt(countElement.text());
+					countElement.text(currentCount - 1 + " Followers");
+
+				} else {
+					$(this).text('Following');
+					var followingId = $(this).data('followingid');
+
+					$.ajax({
+						url: '@Url.Action("addFollow", "Profile")',
+						type: 'POST',
+						data: { FollowingId: followingId },
+
+						success: function (response) {
+							console.log('Response:', response);
+							var friend = {
+								Id: followingId,
+								ProfileImage: response.ImageName,
+								FirstName: response.FirstName,
+								LastName: response.LastName
+							};
+
+							var newFriendElement = '<li id="friend-' + friend.Id + '">' +
+								'<figure>' +
+								'<a asp-controller="Profile" asp-action="Index" asp-route-id="' + friend.Id + '">' +
+								'<img src="~/images/user/' + friend.ProfileImage + '" style="width: 60px; height: 40px;" alt="">' +
+								'</a>' +
+								'</figure>' +
+								'<div class="friendz-meta">' +
+								'<a asp-controller="Profile" asp-action="Index" asp-route-Id="' + friend.Id + '">' + friend.FirstName + ' ' + friend.LastName + '</a>' +
+								'</div>' +
+								'</li>';
+
+							//$('#people-list').append(newFriendElement);
+						},
+						error: function (xhr, status, error) {
+							// Handle error
+						}
+
+
+
+					});
+
+				}
+			});
+		});
+
+	</script>
+}

@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\strip-skins\strip\close.svg" />
+    <None Include="wwwroot\css\strip-skins\strip\error.svg" />
+    <None Include="wwwroot\css\strip-skins\strip\next-small.svg" />
+    <None Include="wwwroot\css\strip-skins\strip\next.svg" />
+    <None Include="wwwroot\css\strip-skins\strip\previous-small.svg" />
+    <None Include="wwwroot\css\strip-skins\strip\previous.svg" />
+    <None Include="wwwroot\css\style.css.map" />
+    <None Include="wwwroot\css\style.scss" />
+    <None Include="wwwroot\fonts\fontawesome-webfont3e6e.svg" />
+    <None Include="wwwroot\fonts\fontawesome-webfont3e6e.woff2" />
+    <None Include="wwwroot\fonts\material-design-iconic-font\fonts\Material-Design-Iconic-Font.svg" />
+    <None Include="wwwroot\fonts\material-design-iconic-font\fonts\Material-Design-Iconic-Font.woff2" />
+    <None Include="wwwroot\fonts\themify9f24.svg" />
+    <None Include="wwwroot\images\camera.svg" />
+    <None Include="wwwroot\images\resources\404.svg" />
+    <None Include="wwwroot\js\backgroundVideo.js" />
+    <None Include="wwwroot\js\custom.js" />
+    <None Include="wwwroot\js\echarts.min.js" />
+    <None Include="wwwroot\js\jquery-3.3.1.min.js" />
+    <None Include="wwwroot\js\jquery.steps.js" />
+    <None Include="wwwroot\js\main.js" />
+    <None Include="wwwroot\js\main.min.js" />
+    <None Include="wwwroot\js\map-init.js" />
+    <None Include="wwwroot\js\script.js" />
+    <None Include="wwwroot\js\site.js" />
+    <None Include="wwwroot\js\strip.pkgd.min.js" />
+    <None Include="wwwroot\js\userincr.js" />
+    <None Include="wwwroot\js\world.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.16">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="OpenQA.Selenium.Winium" Version="1.0.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\search\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Shared\_SearchResults.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,896 @@
+﻿@model List<Post>
+@{
+	Layout = null;
+	Layout = "TimeLineLayout";
+}
+
+<style>
+	.no-content {
+		background-color: #f2f2f2;
+		border: 1px solid #dcdcdc;
+		border-radius: 4px;
+		padding: 20px;
+		text-align: center;
+		display:none;
+		/* color: #333; /* Darker text color for more impact */ */ font-family: 'Arial', sans-serif;
+		font-size: 18px; /* Larger font size */
+		font-weight: bold; /* Bold font weight */
+		text-shadow: 1px 1px #fff; /* White text shadow for depth */
+	}
+	/* The Modal (background) */
+	.modal2 {
+		display: none; /* Hidden by default */
+		position: fixed; /* Stay in place */
+		z-index: 1; /* Sit on top */
+		left: 0;
+		top: 0;
+
+		width: 100%; /* Full width */
+		height: 100%; /* Full height */
+		overflow: auto; /* Enable scroll if needed */
+		background-color: rgb(0,0,0); /* Fallback color */
+		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	}
+
+	/* Modal Content */
+	.modal2-content {
+		background-color: #fefefe;
+		margin: 15% auto; /* 15% from the top and centered */
+		padding: 20px;
+		border: 1px solid #888;
+		width: 25%; /* Could be more or less, depending on screen size */
+	}
+
+	/* The Close Button */
+	.close {
+		color: #aaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+	}
+
+		.close:hover,
+		.close:focus {
+			color: black;
+			text-decoration: none;
+			cursor: pointer;
+		}
+	/* Button container */
+	.modal2-content .button-container {
+		text-align: center; /* Center the buttons */
+	}
+
+	/* Styled Yes button */
+	#confirmBtn {
+		background-color: darkred;
+		color: white;
+		padding: 10px 20px;
+		margin: 10px;
+		border: none;
+		cursor: pointer;
+	}
+
+	/* Styled No button */
+	#cancelBtn {
+		background-color: #ddd;
+		color: black;
+		padding: 10px 20px;
+		margin: 10px;
+		border: none;
+		cursor: pointer;
+	}
+
+		/* Hover effect for both buttons */
+		#confirmBtn:hover, #cancelBtn:hover {
+			opacity: 0.8;
+		}
+
+</style>
+
+<body>
+
+	<div class="theme-layout">
+
+		<section>
+			<div class="feature-photo">
+				<figure><img id="blockCover" src="~/images/user/@ViewBag.him.CoverImage" style="width: 1366px; height: 400px" alt=""></figure>
+				<div class="add-btn">
+					<span id="followersCount">@ViewBag.him.Followers.Count followers</span>
+					<div class="btn-group ml-3" role="group" aria-label="Basic example">
+						@if (ViewBag.Flag)
+						{
+							<a id="blockFollow" href="#" title="" class="btn btn-secondary unfollow2-btn" data-ripple="" data-followingid="@ViewBag.him.Id">Unfollow</a>
+						}
+						else
+						{
+							<a id="blockFollow" href="#" title="" class="btn btn-primary unfollow2-btn" data-ripple="" data-followingid="@ViewBag.him.Id">Follow</a>
+						}
+						<a id="sendMessageProfile" data-user-firstname="@ViewBag.him.FirstName" data-user-lastname="@ViewBag.him.LastName" data-user-id="@ViewBag.him.Id" data-profile-image="@ViewBag.him.ProfileImage" href="#" title="" class="btn btn-info" data-ripple="">Send a Message</a>
+						<a id="blockBtn"  class="btn btn-info danger" data-ripple="" style="background-color:darkred; color:white;">Block</a>
+
+					</div>
+				</div>
+
+
+				
+				<div class="container-fluid">
+					<div class="row merged">
+						<div class="col-lg-2 col-sm-3">
+							<div class="user-avatar">
+								<figure>
+									<img id="blockProfile" src="~/images/user/@ViewBag.him.ProfileImage" style="width: 200px; height: 185px;" alt="">
+								</figure>
+							</div>
+						</div>
+						<div class="col-lg-10 col-sm-9">
+							<div class="timeline-info">
+								<ul>
+									<li class="admin-name">
+										<h5>@ViewBag.him.FirstName @ViewBag.him.LastName</h5>
+							
+									</li>
+									<li id="blockLi">
+										<a class="active" asp-controller="Profile" asp-action="Index" asp-route-id="@ViewBag.him.Id" title="" data-ripple="" data-target="timeline">time line</a>
+										@if (ViewBag.ShowFlag)
+										{
+											<a id="FollowTab" class="" href="#friends" data-target="friends">Follow</a>
+										}
+										<a class="" href="#about" data-target="about" title="" data-ripple="">about</a>
+
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section><!-- top area -->
+
+		<section>
+			<div class="gap gray-bg">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="row" id="page-contents">
+								<div class="col-lg-3">
+									<aside class="sidebar static">
+
+										<div class="widget stick-widget">
+											<h4 class="widget-title">Shortcuts</h4>
+											<ul class="naves">
+											
+												<li>
+													<i class="ti-files"></i>
+													 <a href="/UserProfile/Index"  title="">My profile</a>
+												</li>
+												<li>
+													<i class="ti-comments-smiley"></i>
+													<a id="myLink" asp-controller="Chat" asp-action="Index"> Chats</a>
+
+												</li>
+											</ul>
+										</div><!-- Shortcuts -->
+										
+									</aside>
+								</div><!-- sidebar -->
+								<div class="col-lg-6">
+									<div id="blockContent">
+									@Html.Partial("pvFriends", (ApplicationUser)ViewBag.him)
+									<div id="about" class="tab2-pane tab2-content">
+										<div class="central-meta">
+											<div class="about">
+												<div class="personal">
+													<h5 class="f-title"><i class="ti-info-alt"></i> Personal Info</h5>
+													
+												</div>
+												<div class="d-flex flex-row mt-2">
+													<ul class="nav nav-tabs nav-tabs--vertical nav-tabs--left">
+														<li class="nav-item">
+															<a href="#basic" class="nav-link active" data-toggle="tab">Basic info</a>
+														</li>
+														
+														
+														<li class="nav-item">
+															<a href="#interest" class="nav-link" data-toggle="tab">interests</a>
+														</li>
+														
+													</ul>
+													<div class="tab-content">
+														<div class="tab-pane fade show active" id="basic">
+															<ul class="basics">
+																<li><i class="ti-user"></i>@ViewBag.him.FirstName @ViewBag.him.LastName </li>
+																@if (@ViewBag.him.Gender=='M')
+																{
+																	<li>
+																		<i class="fa-solid fa-venus"></i>
+																		Male
+																	</li>
+																}
+																else
+																{
+																	<li>
+																		<i class="fa-solid fa-venus"></i>
+																		Female
+																	</li>
+																}
+															</ul>
+														</div>
+													
+														<div class="tab-pane fade" id="interest" role="tabpanel">
+															<ul class="basics">
+																@foreach (Interest interst in @ViewBag.him.Interests)
+																{
+															
+																	<li>@interst.InterestName</li>
+																}
+
+
+															</ul>
+														</div>
+														
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="loadMoree tab2-pane active tab2-content" id="timeline">
+										@foreach (var post in Model)
+										{
+
+											<div class="central-meta item" data-postid="@post.PostId" style="display: inline-block;">
+												<div class="user-post">
+
+													<div class="friend-info" data-post-id="@post.PostId">
+														<figure>
+															<a asp-controller="Profile" asp-action="Index" asp-route-id="@ViewBag.him.Id" title="">
+															<img src="~/images/user/@ViewBag.him.ProfileImage" alt="">
+															</a>
+														</figure>
+														<div class="friend-name">
+															<ins><a asp-controller="Profile" asp-action="Index" asp-route-id="@ViewBag.him.Id" title="">@ViewBag.him.FirstName @ViewBag.him.LastName</a></ins>
+															<span>published: @post.PostDateTime</span>
+														</div>
+														<div class="post-meta">
+															<div class="description">
+
+																<p class="editableParagraph">
+																	@post.PostText
+
+																</p>
+															</div>
+															<img class="ImgPreview" src="~/images/post/@post.PostImage.ImageName" style="width: 870px; height: 470px;" alt="">
+															<div class="we-video-info">
+																<ul>
+
+																	<li>
+																		<span class="comment" data-toggle="tooltip" title="" data-original-title="Comments">
+																			<i class="fa fa-comments-o"></i>
+																			<ins>@post.Comments.Count</ins>
+																		</span>
+																	</li>
+																	<li>
+																		<span class="like" data-post-id="@post.PostId" data-liked="@post.Likes.Select(a => a.UserId).ToList().Contains(ViewBag.me.Id).ToString().ToLower()">
+																			<i class="fa fa-heart @if (post.Likes.Select(a => a.UserId).ToList().Contains(ViewBag.me.Id)) {
+															    <text>filled</text>}"></i>
+																			<ins>@post.Likes.Count</ins>
+																		</span>
+																	</li>
+
+
+																	@Html.Partial("pvShare", post.PostId)
+
+																</ul>
+
+
+															</div>
+
+															<!-- Button trigger modal -->
+															<!-- Modal -->
+
+
+														</div>
+													</div>
+
+
+													<div class="coment-area">
+														<ul class="we-comet comments-list ">
+															@foreach (var comment in post.Comments)
+															{
+																<li class="comment " data-post-id="@comment.PostId ">
+																	@if (comment.ParentCommentId == null)
+																	{
+																		<div class="comet-avatar">
+																			<a asp-controller="Profile" asp-action="Index" asp-route-id="@comment.User.Id" title="">
+																				<img src="~/images/user/@comment.User.ProfileImage" style="width: 45px; height: 45px; border-radius:50px" alt="">
+																			</a>
+																		</div>
+																		<div class="we-comment ">
+																			<div class="coment-head">
+																				<h5>
+																					<a asp-controller ="Profile" asp-action="Index" asp-route-id="@comment.User.Id" title="">
+																						@comment.User.FirstName
+																						@comment.User.LastName
+																					</a>
+																				</h5>
+																				<span>@comment.CommentDate</span>
+																				<a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+																			</div>
+																			<p>
+																				@comment.CommentText
+																			</p>
+																		</div>
+																	}
+																	@* reply *@
+																	<div>
+
+																		<ul>
+																			@foreach (var reply in post.Comments)
+																			{
+																				@if (reply.ParentCommentId == comment.CommentId)
+																				{
+
+																					<li class="comment" data-post-id="@reply.PostId">
+																						<div class="comet-avatar">
+																							<img src="~/images/user/@reply.User.ProfileImage" alt="">
+																						</div>
+																						<div class="we-comment">
+																							<div class="coment-head">
+																								<h5><a href="time-line.html" title="">@reply.User.FirstName</a></h5>
+																								<span>@reply.CommentDate</span>
+																								<a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+																							</div>
+																							<p>
+																								@reply.CommentText
+																							</p>
+																						</div>
+																					</li>
+																				}
+																			}
+																		</ul>
+																	</div>
+																</li>
+
+
+															}
+
+
+
+														</ul>
+
+														<ul class="we-comet">
+															<li>
+																<a href="#" title="" class="showmore underline">
+																	more
+																	comments
+																</a>
+															</li>
+															<li class="post-comment">
+																<div class="comet-avatar">
+																		<img src="~/images/user/@ViewBag.me.ProfileImage" alt="" style="width: 40px; height: 40px; border-radius: 50%;">
+																</div>
+																<div class="post-comt-box">
+																	<form method="post">
+																		<textarea placeholder="Post your comment"></textarea>
+																		<div class="add-smiles">
+																			<span class="em em-expressionless" title="add icon"></span>
+																		</div>
+																		<div class="smiles-bunch">
+																			<i class="em em---1"></i>
+																			<i class="em em-smiley"></i>
+																			<i class="em em-anguished"></i>
+																			<i class="em em-laughing"></i>
+																			<i class="em em-angry"></i>
+																			<i class="em em-astonished"></i>
+																			<i class="em em-blush"></i>
+																			<i class="em em-disappointed"></i>
+																			<i class="em em-worried"></i>
+																			<i class="em em-kissing_heart"></i>
+																			<i class="em em-rage"></i>
+																			<i class="em em-stuck_out_tongue"></i>
+																		</div>
+																		<button type="submit"></button>
+																	</form>
+																</div>
+															</li>
+														</ul>
+													</div>
+
+
+
+												</div>
+											</div>
+										}
+									</div>
+									</div>
+									<div id="noContent" class="no-content">No content to show</div>
+								</div><!-- centerl meta -->
+							
+
+								<div class="col-lg-3">
+								<!-- sidebar -->@Html.Partial("pvSideBarFollowingList", (ApplicationUser)ViewBag.me)
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Custom Confirmation Modal -->
+		<!-- The Modal Background -->
+		<div id="confirmationModal" class="modal2">
+			<!-- Modal Content -->
+			<div class="modal2-content">
+				<span class="close">×</span>
+				<p>Are you sure you want to block this user?</p>
+				<div class="button-container">
+					<button id="confirmBtn">Yes</button>
+					<button id="cancelBtn">No</button>
+				</div>
+			</div>
+		</div>
+
+
+
+
+	</div>
+	<div class="side-panel">
+		<h4 class="panel-title">General Setting</h4>
+		<form method="post">
+			<div class="setting-row">
+				<span>use night mode</span>
+				<input type="checkbox" id="nightmode1" />
+				<label for="nightmode1" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Notifications</span>
+				<input type="checkbox" id="switch22" />
+				<label for="switch22" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Notification sound</span>
+				<input type="checkbox" id="switch33" />
+				<label for="switch33" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>My profile</span>
+				<input type="checkbox" id="switch44" />
+				<label for="switch44" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Show profile</span>
+				<input type="checkbox" id="switch55" />
+				<label for="switch55" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+		</form>
+		<h4 class="panel-title">Account Setting</h4>
+		<form method="post">
+			<div class="setting-row">
+				<span>Sub users</span>
+				<input type="checkbox" id="switch66" />
+				<label for="switch66" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>personal account</span>
+				<input type="checkbox" id="switch77" />
+				<label for="switch77" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Business account</span>
+				<input type="checkbox" id="switch88" />
+				<label for="switch88" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Show me online</span>
+				<input type="checkbox" id="switch99" />
+				<label for="switch99" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Delete history</span>
+				<input type="checkbox" id="switch101" />
+				<label for="switch101" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Expose author name</span>
+				<input type="checkbox" id="switch111" />
+				<label for="switch111" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+		</form>
+	</div><!-- side panel -->
+
+
+	<div id="FarahModal" class="FarahModal" style="display:none;">
+		<div class="FarahModal-content">
+			<span class="FarahClose" onclick="closeModal()">&times;</span>
+			<img id="scannedImage" src="" alt="Scanned Image">
+			<p>Scanning image...</p>
+		</div>
+	</div>	<!-- share Modal  -->
+	<!-- share Modal  -->
+	@Html.Partial("pvShareModal", (List<ApplicationUser>)ViewBag.me.Followings)
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+	<script src="~/js/main.min.js"></script>
+	<script src="~/js/script.js"></script>
+	<script src="~/js/map-init.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8c55_YHLvDHGACkQscgbGLtLRdxBDCfI"></script>
+
+	<script>
+		$(document).ready(function () {
+			var modal = document.getElementById('confirmationModal');
+			// Assuming receiverId is defined somewhere in your script or passed from the server
+			let flag = @ViewBag.block; // Replace this with the actual value or logic to get the receiverId
+
+			// Check if receiverId has a valid value
+			if (flag === 1) {
+				modal.style.display = 'none';
+				document.getElementById('blockProfile').src = '/images/user/DefaultMan.jpg';
+				document.getElementById('blockCover').src = '/images/user/default_image.png';
+				document.getElementById('blockContent').style.display = 'none';
+				document.getElementById('blockLi').style.display = 'none';
+				document.getElementById('sendMessageProfile').style.display = 'none';
+				document.getElementById('blockFollow').style.display = 'none';
+				document.getElementById('noContent').style.display = 'block';
+				btn.textContent = 'Unblock';
+
+			}
+			else if (flag === 2) {
+				modal.style.display = 'none';
+				document.getElementById('blockProfile').src = '/images/user/DefaultMan.jpg';
+				document.getElementById('blockCover').src = '/images/user/default_image.png';
+				document.getElementById('blockContent').style.display = 'none';
+				document.getElementById('blockLi').style.display = 'none';
+				document.getElementById('sendMessageProfile').style.display = 'none';
+				document.getElementById('blockFollow').style.display = 'none';
+				document.getElementById('noContent').style.display = 'block';
+				btn.textContent = 'block';
+			}
+		});
+
+
+	</script>
+	@* block *@
+	<script>
+
+		var flag = @ViewBag.block;
+		// Get the modal
+		var modal = document.getElementById('confirmationModal');
+
+		// Get the button that opens the modal
+		var btn = document.getElementById('blockBtn');
+
+		// Get the <span> element that closes the modal
+		var span = document.getElementsByClassName('close')[0];
+
+		// When the user clicks on <span> (x), close the modal
+		span.onclick = function () {
+			modal.style.display = 'none';
+		}
+
+		// When the user clicks on "Yes", perform block actions
+		document.getElementById('confirmBtn').addEventListener('click', function () {
+			
+			var userId = '@ViewBag.him.Id';
+
+			jQuery.ajax({
+				url: '/Profile/blockUser', // Replace with your actual server endpoint
+				type: 'POST',
+				data: {
+					userId: userId
+				},
+				success: function (response) {
+					console.log('Block successful:', response);
+					modal.style.display = 'none';
+					document.getElementById('blockProfile').src = '/images/user/DefaultMan.jpg';
+					document.getElementById('blockCover').src = '/images/user/default_image.png';
+					document.getElementById('blockContent').style.display = 'none';
+					document.getElementById('blockLi').style.display = 'none';
+					document.getElementById('sendMessageProfile').style.display = 'none';
+					document.getElementById('blockFollow').style.display = 'none';
+					document.getElementById('noContent').style.display = 'block';
+					btn.textContent = 'Unblock';
+					flag = 1;
+				},
+				error: function (xhr, status, error) {
+					console.log("no");
+					console.error('Block error:', error);
+				}
+			});
+		});
+
+		// When the user clicks on "No", close the modal
+		document.getElementById('cancelBtn').addEventListener('click', function () {
+			modal.style.display = 'none';
+		});
+
+		// When the user clicks anywhere outside of the modal, close it
+		window.onclick = function (event) {
+			if (event.target == modal) {
+				modal.style.display = 'none';
+			}
+		}
+
+		// Event listener for unblockBtn
+		btn.addEventListener('click', function () {
+			if (this.textContent === 'Unblock') {
+				
+				var userId = '@ViewBag.him.Id';
+
+				jQuery.ajax({
+					url: '/Profile/unBlockUser', // Replace with your actual server endpoint
+					type: 'POST',
+					data: {
+						userId: userId
+					},
+					success: function (response) {
+						if (flag === 1) {
+							document.getElementById('blockProfile').src = '/images/user/@ViewBag.him.ProfileImage'; // Replace with original profile image path
+							document.getElementById('blockCover').src = '/images/user/@ViewBag.him.CoverImage'; // Replace with original cover image path
+							document.getElementById('blockContent').style.display = 'block';
+							document.getElementById('blockLi').style.display = '';
+							document.getElementById('sendMessageProfile').style.display = 'block';
+							document.getElementById('blockFollow').style.display = 'block';
+							document.getElementById('noContent').style.display = 'none';
+							document.getElementById('blockFollow').textContent = 'Follow';
+						}
+					},
+					error: function (xhr, status, error) {
+						console.log("no");
+						console.error('unBlock error:', error);
+					}
+				});
+
+
+
+
+				this.textContent = 'Block';
+			} else {
+			
+				modal.style.display = 'block';
+			}
+		});
+
+
+	</script>
+	<script>
+
+
+		$(document).ready(function () {
+			$('.loadMoree').on('click', '.like', function () {
+				var icon = $(this).find('i');
+				var count = $(this).find('ins');
+				var postId = $(this).data('post-id');
+				console.log("loke loggg");
+				if (icon.hasClass('filled')) {
+					// Unlike the post
+					icon.removeClass('filled');
+					count.text(parseInt(count.text()) - 1);
+					// Perform the unlike action (e.g., send request to server to remove like)
+					jQuery.ajax({
+						url: '/UserProfile/RemoveLike',
+						type: 'POST',
+						data: {
+							postId: postId,
+
+						},
+						success: function (response) {
+							console.log("hhhh");
+
+						},
+						error: function (xhr, status, error) {
+							console.log("hhhh2");
+						}
+					});
+				} else {
+					// Like the post
+					icon.addClass('filled');
+					count.text(parseInt(count.text()) + 1);
+
+					// Perform the like action (e.g., send request to server to add like)
+					jQuery.ajax({
+						url: '/UserProfile/AddLike',
+						type: 'POST',
+						data: {
+							postId: postId,
+
+						},
+						success: function (response) {
+							console.log("hhhh");
+
+						},
+						error: function (xhr, status, error) {
+							console.log("hhhh2");
+						}
+					});
+				}
+			});
+		});
+
+
+
+
+		$(document).on('keydown', '.post-comt-box textarea', function (event) {
+			if (event.keyCode == 13) {
+				var comment = jQuery(this).val();
+				var parent = jQuery(this).closest(".item");
+				var postId = parent.find(".friend-info").data('post-id');
+				var profileImage = '@ViewBag.me.ProfileImage';
+				var firstName = '@ViewBag.me.FirstName';
+				var lastName = '@ViewBag.me.LastName';
+				var time = '@DateTime.Now';
+				var src = "/images/user/";
+				var comment_HTML = '<div class="comment" data-post-id="' + postId + '"><div class="comet-avatar"><a href="/UserProfile/Index" title=""><img style="width: 45px; height: 45px; border-radius:50px" src="' + src + profileImage + '" alt=""/></a></div><div class="we-comment"><div class="coment-head"><h5><a href="/UserProfile/Index" title="">' + firstName + ' ' + lastName + '</a></h5><span>' + time + '</span><a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a></div><p>' + comment + '</p></div></div>';
+
+				parent.find(".comments-list").append('<li>' + comment_HTML + '</li>');
+
+				jQuery.ajax({
+					url: '/UserProfile/AddComment',
+					type: 'POST',
+					data: {
+						postId: postId,
+						text: comment
+					},
+					success: function (response) {
+						console.log("hhhh");
+						parent.find(".comment ins").text(response.commentCount);
+					},
+					error: function (xhr, status, error) {
+						// Handle error
+					}
+				});
+
+				jQuery(this).val('');
+			}
+		});
+
+
+	</script>
+	@* switch tabs *@
+	<script>
+
+		$(document).ready(function () {
+			// Show the initial active tab content
+			$('.tab2-pane').hide();
+			$('.tab2-content').hide();
+			$('.tab2-pane.active').show();
+			$('.tab3-content').hide();
+			$('.timeline-info a').click(function (e) {
+
+				var target = $(this).attr('data-target');
+				if ($(this).attr('data-target') !== "timeline") {
+					e.preventDefault();
+				}
+				$('.tab2-pane').hide(); // Hide all tab panes
+				$('.tab2-content').hide();
+				$('.tab3-content').hide();
+				$('.specialDiv').hide();
+				$('#' + target).show(); // Show the selected tab pane
+				$('.timeline-info a').removeClass('active');
+				$(this).addClass('active');
+			});
+			$('.naves a').click(function (e) {
+
+				var target = $(this).attr('href');
+				$('.tab2-content').hide();
+				$('.tab2-pane').hide(); // Hide all tab contents
+				$(target).show();
+				$('.timeline-info a').removeClass('active');
+
+
+			});
+		});
+
+
+
+	</script>
+
+	<script>
+		$(document).ready(function () {
+			
+			$(document).on('click', '.unfollow2-btn', function (event) {
+				
+				event.preventDefault();
+				var followingId = $(this).data('followingid');
+
+				if ($(this).text().trim() !== "Follow") {
+					$.ajax({
+						url: '@Url.Action("RemoveFollowing", "UserProfile")',
+						type: 'POST',
+						data: { FollowingId: followingId },
+						success: function (response) {
+							if (response.success) {
+								console.log("okkkkkkkkkkkkkk");
+							} else {
+								console.log("not okkkkkkkkkkkkkk");
+							}
+						},
+						error: function (xhr, status, error) {
+
+						}
+					});
+
+					$(this).text('Follow');
+					$('#FollowTab').hide();
+					var countElement = $('#followersCount');
+					var currentCount = parseInt(countElement.text());
+					countElement.text(currentCount - 1 + " Followers");
+
+				} else {
+					$(this).text('UnFollow');
+					var countElement = $('#followersCount');
+					var currentCount = parseInt(countElement.text());
+					countElement.text(currentCount + 1 + " Followers");
+
+					$.ajax({
+						url: '@Url.Action("addFollow", "Profile")',
+						type: 'POST',
+						data: { FollowingId: followingId },
+						success: function (response) {
+							if (response.success) {
+								console.log("okkkkkkkkkkkkkk");
+							} else {
+								console.log("not okkkkkkkkkkkkkk");
+							}
+						},
+						error: function (xhr, status, error) {
+
+						}
+					});
+
+				}
+			});
+		});
+
+	</script>
+	<script>
+		// Get the FarahModal element
+		var FarahModal = document.getElementById('FarahModal');
+
+		// Get the image element inside the modal
+		var scannedImage = document.getElementById('scannedImage');
+
+		// Get the file input element
+		var fileInput = document.getElementById('fileInput');
+
+		// When the file input changes (image is uploaded)
+		fileInput.addEventListener('change', function () {
+			var file = this.files[0];
+
+			console.log("Image path:", file);
+			if (file) {
+				// Show the modal
+				FarahModal.style.display = 'block';
+
+				// Set the image source to the uploaded image
+				scannedImage.src = URL.createObjectURL(file);
+
+				// Wait for the image to load
+				scannedImage.onload = function () {
+					// Simulate a delay before hiding the modal (scanning effect)
+					setTimeout(function () {
+						// Hide the modal
+						FarahModal.style.display = 'none';
+
+						// Submit the form
+						document.getElementById('searchForm').submit();
+					}, 2000); // 2 seconds delay (adjust as needed)
+				};
+			}
+		});
+
+		// Close the modal
+		function closeModal() {
+			FarahModal.style.display = 'none';
+		}
+
+		function triggerFileInput() {
+			// Trigger the file input click
+			document.getElementById('fileInput').click();
+		}
+	</script>
+
+</body>
+
+</html>

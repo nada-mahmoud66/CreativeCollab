@@ -1,0 +1,1003 @@
+﻿@model VmGroupAdmin
+@{
+	Layout = null;
+	Layout = "TimeLineLayout";
+}
+		<section>
+			<div class="feature-photo">
+				<figure><img src="~/images/groups/@Model.group.CoverImage" style="height:300px;" alt=""></figure>
+				<div class="add-btn">
+					<span>@Model.NoOfMembers followers</span>
+					<a href="@Url.Action("DeleteGroup", "Group", new {groupId=@Model.group.GroupId })" title="" data-ripple="" style="background-color: brown;">Delete Group</a>
+				</div>
+				<form class="edit-phto" style="left:15px;" method="post" asp-controller="Group" asp-action="EditGroupCover" enctype="multipart/form-data">
+					@Html.Hidden("groupId",Model.group.GroupId)
+					<i class="fa fa-camera-retro"></i>
+					<label class="fileContainer">
+						Edit Cover Photo
+						<input type="file" id="coverPhotoInput" asp-for="coverImageFile" accept="image/*" />
+					</label>
+				</form>
+				<div class="container-fluid">
+					<div class="row merged">
+						<div class="col-lg-10 col-sm-9">
+							<div class="timeline-info">
+								<ul>
+									<li class="admin-name">
+										<h5>@Model.group.GroupName</h5>
+										<span>@Model.group.Description</span>
+									</li>
+									<li>
+										<a class="active" href="fav-page.html" title="" data-ripple="">Page</a>
+										<a class="" href="/Group/GroupMembersForAdmin?groupId=@Model.group.GroupId" title="" data-ripple="">Members</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section>
+			<div class="gap gray-bg">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="row" id="page-contents">
+								<div class="col-lg-3">
+									<aside class="sidebar static">
+								<div class="widget  stick-widget">
+									<h4 class="widget-title">Shortcuts</h4>
+									<ul class="naves">
+
+										<li>
+											<i class="ti-image"></i>
+											<a href="/UserProfile/Index" title="">My profile</a>
+										</li>
+
+										<li>
+											<i class="ti-comments-smiley"></i>
+											<a id="myLink" asp-controller="Chat" asp-action="Index"> Chats</a>
+										</li>
+
+
+
+									</ul>
+								</div><!-- Shortcuts -->
+										<!-- Shortcuts -->
+									</aside>
+								</div><!-- sidebar -->
+								<div class="col-lg-6">
+									<div class="central-meta">
+										<div class="new-postbox">
+											<figure>
+												<img src="~/images/user/@Model.CurrentUser.ProfileImage" alt="">
+											</figure>
+											<form method="post">
+												<a href="#POSTMODAL" class="attachments trigger-btn link"
+												   data-toggle="modal">
+													<p class="attachment-text">What Are You Thinking ... ?</p>
+												</a>
+											</form>
+										</div>
+									</div><!-- add post new box -->
+									<div class="loadMore loadMoree">
+								@{
+									var j = 0;
+
+
+								}
+										@foreach (var post in Model.group.Posts)
+										{
+											if (post.IsDeleted == false)
+											{
+												<div class="central-meta item" data-postid="@post.PostId" style="display: inline-block;">
+													<div class="user-post">
+														<div id="container">
+																<div id="menu-wrap">
+																	<input type="checkbox" class="toggler">
+																	<div class="dots">
+																		<div></div>
+																	</div>
+																	<div class="menu">
+																		<div>
+																			<ul>
+																				@if (post.UserId == Model.group.CreatorUserId)
+																					{
+																					<li>
+																						<a href="#EDITMODAL"
+																						   class="trigger-btn link editTextButton"
+																						   data-toggle="modal"
+																						   style="margin-left: -20px;">
+																							<i class="fas fa-pen mx-2"></i>Edit
+																						</a>
+																					</li>
+																					}
+																				<li>
+																					<a href="#myModal"
+																					   class="trigger-btn link deletePostBtn"
+																					   data-toggle="modal">
+																						<i class="fas fa-trash mx-2  "></i>Delete
+																					</a>
+																				</li>
+																			</ul>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														
+														<div class="friend-info" data-post-id="@post.PostId">
+															<figure>
+																<img src="~/images/user/@post.User.ProfileImage" alt="">
+															</figure>
+															<div class="friend-name">
+														<ins><a asp-controller="Profile" asp-action="Index" asp-route-Id="@post.UserId" title="">@post.User.FirstName @post.User.LastName</a></ins>
+																@if (post.UserId == Model.group.CreatorUserId)
+																{
+																	<span style="color:#28a745">Admin</span>
+																}
+																<span>published: @post.PostDateTime</span>
+															</div>
+															<div class="post-meta">
+																<div class="description">
+
+																	<p class="editableParagraph">@post.PostText</p>
+																</div>
+														<img title="@ViewBag.titels2[j]" class="ImgPreview" src="~/images/post/@post.PostImage.ImageName" style="width: 870px; height: 470px;" alt="">
+														@{
+															j++;
+														}
+														<div class="we-video-info">
+																	<ul>
+
+																		<li>
+																			<span class="comment" data-toggle="tooltip" title="" data-original-title="Comments">
+																				<i class="fa fa-comments-o"></i>
+																				<ins>@post.Comments.Count</ins>
+																			</span>
+																		</li>
+																		<li>
+																			<span class="like" data-post-id="@post.PostId" data-liked="@post.Likes.Select(a=>a.UserId).ToList().Contains(Model.CurrentUser.Id).ToString().ToLower()">
+																		<i class="fa fa-heart @if (post.Likes.Select(a => a.UserId).ToList().Contains(Model.CurrentUser.Id))
+																				{
+																					<text>filled</text>
+																				}"
+																					></i>
+																				<ins>@post.Likes.Count</ins>
+																			</span>
+																		</li>
+
+
+
+																@Html.Partial("pvShare", post.PostId)
+
+
+
+
+																	</ul>
+
+
+																</div>
+
+																<!-- Button trigger modal -->
+																<!-- Modal -->
+
+
+															</div>
+														</div>
+														<div class="coment-area">
+															<ul class="we-comet comments-list ">
+																@foreach (var comment in post.Comments)
+																{
+																	<li class="comment " data-post-id="@comment.PostId ">
+																		@if (comment.ParentCommentId == null)
+																		{
+																			<div class="comet-avatar">
+																				<img src="~/images/user/@comment.User.ProfileImage" alt="">
+																			</div>
+																			<div class="we-comment ">
+																				<div class="coment-head">
+																					<h5>
+																				<a asp-controller="Profile" asp-action="Index" asp-route-Id="@comment.UserId" title="">
+																							@comment.User.FirstName
+																							@comment.User.LastName
+																						</a>
+																					</h5>
+																					@if(Model.group.CreatorUserId==comment.UserId){
+																									<span style="background-color:#28a745;color:white;width: 55px;margin-left: 4px;">Admin</span>
+																								}
+																					<span>@comment.CommentDate</span>
+																					<a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+																				</div>
+																				<p>
+																					@comment.CommentText
+																				</p>
+																			</div>
+																		}
+																		@* reply *@
+																		<div>
+
+																			<ul>
+																				@foreach (var reply in post.Comments)
+																				{
+																					@if (reply.ParentCommentId == comment.CommentId)
+																					{
+
+																						<li class="comment" data-post-id="@reply.PostId">
+																							<div class="comet-avatar">
+																								<img src="~/images/user/@reply.User.ProfileImage" alt="">
+																							</div>
+																							<div class="we-comment">
+																								<div class="coment-head">
+																							<h5><a asp-controller="Profile" asp-action="Index" asp-route-Id="@reply.UserId" title="">@reply.User.FirstName</a></h5>
+																									@if(Model.group.CreatorUserId==reply.UserId)
+																									{
+																										<span style="background-color:#28a745;color:white;width: 55px;margin-left: 4px;">Admin</span>
+																									}																									<span>@reply.CommentDate</span>
+																									<a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+																								</div>
+																								<p>
+																									@reply.CommentText
+																								</p>
+																							</div>
+																						</li>
+																					}
+																				}
+																			</ul>
+																		</div>
+																	</li>
+
+
+																}
+
+
+
+															</ul>
+
+															<ul class="we-comet">
+																<li>
+																	<a href="#" title="" class="showmore underline">
+																		more
+																		comments
+																	</a>
+																</li>
+																<li class="post-comment">
+																	<div class="comet-avatar">
+																		<img src="~/images/user/@Model.CurrentUser.ProfileImage" alt="">
+																	</div>
+																	<div class="post-comt-box">
+																		<form method="post">
+																			<textarea placeholder="Post your comment"></textarea>
+																			<div class="add-smiles">
+																				<span class="em em-expressionless" title="add icon"></span>
+																			</div>
+																			<div class="smiles-bunch">
+																				<i class="em em---1"></i>
+																				<i class="em em-smiley"></i>
+																				<i class="em em-anguished"></i>
+																				<i class="em em-laughing"></i>
+																				<i class="em em-angry"></i>
+																				<i class="em em-astonished"></i>
+																				<i class="em em-blush"></i>
+																				<i class="em em-disappointed"></i>
+																				<i class="em em-worried"></i>
+																				<i class="em em-kissing_heart"></i>
+																				<i class="em em-rage"></i>
+																				<i class="em em-stuck_out_tongue"></i>
+																			</div>
+																			<button type="submit"></button>
+																		</form>
+																	</div>
+																</li>
+															</ul>
+														</div>
+
+
+
+													</div>
+												</div>
+											}
+										}
+
+
+
+									</div>
+								</div><!-- centerl meta -->
+								<div class="col-lg-3">
+							<aside class="sidebar static">
+
+								<div class="widget">
+									<h4 class="widget-title">Invite friends</h4>
+									<ul class="invition">
+										@foreach (var friend in Model.FriendsToInvite)
+										{
+											<li class="friendToInvite">
+												<figure>
+													<img src="~/images/user/@friend.ProfileImage" style="height:50px;width:50px" alt="">
+												</figure>
+												<div class="friend-meta">
+													<h4>
+														<a asp-controller="Profile" asp-action="Index" asp-route-Id="@friend.Id" class="underline" title="">
+															@friend.FirstName
+															@friend.LastName
+														</a>
+													</h4>
+													<a href="" title="" class="invite" data-friendid="@friend.Id" data-ripple="">invite</a>
+												</div>
+											</li>
+										}
+									</ul>
+								</div>
+							</aside>
+							@Html.Partial("pvSideBarFollowingList", new ApplicationUser { Followings = ViewBag.Followings })
+								</div><!-- sidebar -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+<!-- share Modal  -->
+@Html.Partial("pvShareModal", (List<ApplicationUser>)Model.CurrentUser.Followings)
+
+
+<!--  edit modal -->
+<div class="modal  fade" id="EDITMODAL" tabindex="-1" role="dialog"
+	 aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">
+					Edit
+					Post
+				</h5>
+				<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="">
+					<div class="post-meta">
+
+						<img class="modal-image" class="preview1"
+							 src="" alt="">
+
+						<textarea rows='3' data-min-rows='3' contenteditable="true" class="editTextarea"
+								  autofocus> </textarea>
+					</div>
+				</form>
+
+			</div>
+			<div class="modal-footer editbtn">
+
+				<button class="button updateButtonMODAL">update</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--delete modal-->
+<div id="myModal" class="modal fade">
+	<div class="modal-dialog modal-confirm">
+		<div class="modal-content">
+			<div class="modal-header flex-column">
+				<div class="icon-box">
+					<i class="fas fa-trash mx-2"></i>
+				</div>
+				<h4 class="modal-title w-100">Are you sure?</h4>
+				<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">
+					&times;
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>
+					Do you really want to delete these records? This
+					process cannot be undone.
+				</p>
+			</div>
+			<div class="modal-footer justify-content-center">
+				<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">
+					Cancel
+				</button>
+				<button type="button"
+						class="btn btn-danger" id="confirmDelete">
+					Delete
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@* add post moadal *@
+<div class="modal  pOSTMODAL fade" id="POSTMODAL" tabindex="-1" role="dialog"
+	 aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">
+					Add Post
+				</h5>
+				<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<textarea name="" id="" cols="30" rows="4" autofocus placeholder="What Are You Thinking ... ?"></textarea>
+				<label class="Picture" for="picture__input" tabIndex="0">
+					<span class="picture__image"></span>
+				</label>
+
+				<input type="file" name="picture__input" id="picture__input">
+			</div>
+			<div class="modal-footer">
+				<button class="PostButton">Post</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Include jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Include SignalR -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.8/signalr.min.js"></script>
+@*Add Post for Real-Time*@
+
+@section scripts {
+	<script>
+		const connection = new signalR.HubConnectionBuilder()
+			.withUrl("/timelineHub")
+			.build();
+
+		connection.start().then(() => {
+			console.log('Connection started ola groupAdmin');
+		}).catch((err) => {
+			console.error(err.toString());
+		});
+		connection.on("ReceivePostInGroup", (senderId, postId, UserImg, Username, time, content, titles, postImg, groupId, groupName) => {
+			var profileImage = '@ViewBag.ProfileImage';
+			var newPostDiv = $('<div class="central-meta item" data-postid="' + postId + '">\
+																			<div class="user-post">\
+																				<div class="friend-info" data-post-id="' + postId + '">\
+																					<figure>\
+																												<img src="/images/user/' + UserImg + '" alt="" style="width: 80px; height: 40px; border-radius: 50%;">\
+																					</figure>\
+																					<div class="friend-name">\
+																								<ins><a href="/Profile/Index?id=' + senderId + '" title="">' + Username + '</a>\
+																								</ins>\
+																								<span>published: ' + time + '</span>\
+																					</div>\
+																					<div class="post-meta">\
+																<div class="description">\
+																									<p class="editableParagraph">' + content + '</p>\
+																						</div>\
+																										<img title="'+ titles + '" class="ImgPreview" src="/images/post/' + postImg + '" style="width: 870px; height: 470px;" alt="">\
+																						<div class="we-video-info">\
+																							<ul>\
+																								<li>\
+																									<span class="comment" data-toggle="tooltip" title="Comments">\
+																										<i class="fa fa-comments-o"></i>\
+																										<ins>0</ins>\
+																									</span>\
+																								</li>\
+																								<li>\
+																										 <span class="like" data-post-id="' + postId + '" data-liked="false">\
+																	<i class="fa fa-heart"></i>\
+																	<ins>0</ins>\
+																</span>\
+																								</li>\
+																								<li class="social-media">\
+																									<div class="menu">\
+																										<div class="btn trigger">\
+																											<i class="fa fa-share-alt" data-toggle="modal" data-target="#exampleModalCenter"></i>\
+																										</div>\
+																									</div>\
+																								</li>\
+																							</ul>\
+																						</div>\
+																					</div>\
+																				</div>\
+																				<div class="coment-area">\
+																					<ul class="we-comet comments-list">\
+																					</ul>\
+																					<ul class="we-comet">\
+																						<li>\
+																							<a href="#" title="" class="showmore underline">\
+																								more comments\
+																							</a>\
+																						</li>\
+																						<li class="post-comment">\
+																							<div class="comet-avatar">\
+																										<img src="/images/user/' + profileImage + '" alt="" style="width: 80px; height: 40px;">\
+																							</div>\
+																							<div class="post-comt-box">\
+																								<form method="post">\
+																									<textarea placeholder="Post your comment"></textarea>\
+																									<div class="add-smiles">\
+																										<span class="em em-expressionless" title="add icon"></span>\
+																									</div>\
+																									<div class="smiles-bunch">\
+																										<i class="em em---1"></i>\
+																										<i class="em em-smiley"></i>\
+																										<i class="em em-anguished"></i>\
+																										<i class="em em-laughing"></i>\
+																										<i class="em em-angry"></i>\
+																										<i class="em em-astonished"></i>\
+																										<i class="em em-blush"></i>\
+																										<i class="em em-disappointed"></i>\
+																										<i class="em em-worried"></i>\
+																										<i class="em em-kissing_heart"></i>\
+																										<i class="em em-rage"></i>\
+																										<i class="em em-stuck_out_tongue"></i>\
+																									</div>\
+																									<button type="submit"></button>\
+																								</form>\
+																							</div>\
+																						</li>\
+																					</ul>\
+																				</div>\
+																			</div>\
+																		</div>');
+			$('.loadMoree').prepend(newPostDiv);
+		});
+	</script>
+
+	@* Invite *@
+	<script>
+		$(document).on('click', '.invite', function (event) {
+			// Prevent the default behavior of the anchor tag
+			event.preventDefault();
+			var friendId = $(this).data('friendid');
+			var aElement = $(this).closest('.friendToInvite').find('.invite');
+			aElement.text('Invited!');
+			aElement.off('click'); // Remove all click event handlers
+			aElement.css({
+				'pointer-events': 'none', // Disable pointer events
+				'opacity': '0.7' // Reduce opacity to visually indicate it's disabled
+				// Add any other inline styles you want to apply
+			});
+
+			// Find the <span> element inside the parent <div> and toggle its text
+
+			$.ajax({
+				url: '/Group/InviteFriend',
+				type: 'POST',
+				data: {
+					userId: '@Model.CurrentUser.Id',
+					friendId: friendId,
+					groupId: '@Model.group.GroupId'
+				},
+				success: function (response) {
+					console.log("sucess invite")
+				},
+				error: function (xhr, status, error) {
+					console.log("failed")
+				}
+			});
+		});
+	</script>
+	@*Edit Group Cover*@
+	<script>
+		document.getElementById('coverPhotoInput').addEventListener('change', function () {
+			// Submit the form when the file input changes
+			document.querySelector('.edit-phto').submit();
+		});
+	</script>
+	@* delete and add post *@
+	<script>
+		$(document).ready(function () {
+			//delete post
+
+			$('.loadMoree').on('click', '.deletePostBtn', function () {
+				// Your code here
+				console.log("one 1 ");
+				const postId = $(this).closest('.central-meta').data('postid');
+				console.log("one");
+				// Set up the modal with the specific post ID
+				$('#myModal').data('postid', postId).modal('show');
+			});
+
+			// Event listener for confirm delete button in modal
+			$('#confirmDelete').on('click', function () {
+				console.log("two");
+				const postId = $('#myModal').data('postid');
+
+				// Perform deletion and remove the post element from the GUI
+				deletePost(postId);
+				$('#myModal').hide();
+				$('body').removeClass('modal-open');
+				$('.modal-backdrop').remove();
+				// Hide the modal
+				console.log("oyuy");
+				console.log("postID: " + postId);
+
+				jQuery.ajax({
+					url: '/Group/DeletePost',
+					type: 'POST',
+					data: {
+						postId: postId
+					},
+					success: function (response) {
+						console.log("hhhh");
+
+					},
+					error: function (xhr, status, error) {
+						// Handle error
+						console.log("hhhha354");
+					}
+				});
+
+
+			});
+			function deletePost(postId) {
+				// Remove the post element from the GUI
+				$(`.central-meta[data-postid=${postId}]`).remove();
+				console.log("three");
+
+			}
+
+			$('.PostButton').on('click', function () {
+				// Get the entered text
+				var enteredText = $('#POSTMODAL textarea').val();
+				console.log("farahyasserrr");
+				// Get the uploaded image file
+				var uploadedImage = $('#POSTMODAL #picture__input')[0].files[0];
+
+				var profileImage = '@ViewBag.ProfileImage';
+				var firstName = '@ViewBag.FirstName';
+				var lastName = '@ViewBag.LastName';
+				var dateTime = '@DateTime.Now ';
+				var groupId = @Model.group.GroupId;
+
+				var modal = document.getElementById("textModal");
+
+
+
+				// Get the <span> element that closes the modal
+				var span = document.getElementById("closeModal");
+
+				// Get the buttons inside the modal
+				var editButton = document.getElementById("editButton");
+				var cancelButton = document.getElementById("cancelButton");
+
+				// Create a new post div with the entered text and image
+
+				var formData = new FormData();
+				//var formData = new FormData();
+				formData.append('uploadedImage', $('#POSTMODAL #picture__input')[0].files[0]);
+				formData.append('enteredText', enteredText);
+				formData.append('Date', dateTime);
+				formData.append('groupId', groupId);
+				$.ajax({
+					url: '/UserProfile/AddPost',
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function (response) {
+						console.log("Post added successfully");
+						var postId = response.postID;
+						var titels = response.titels;
+
+						console.log("post id :");
+
+						console.log(postId);
+						var newPostDiv = $('<div class="central-meta item" data-postid="' + postId + '">\
+														<div class="user-post">\
+															<div id="container">\
+																<div id="menu-wrap">\
+																	<input type="checkbox" class="toggler">\
+																	<div class="dots">\
+																		<div></div>\
+																	</div>\
+																	<div class="menu">\
+																		<div>\
+																			<ul>\
+																				<li>\
+																					<a href="#EDITMODAL" class="trigger-btn link editTextButton"\
+																						data-toggle="modal"\
+																						style="margin-left: -20px;">\
+																						<i class="fas fa-pen mx-2"></i>Edit\
+																					</a>\
+																				</li>\
+																				<li>\
+																					<a href="#myModal" class="trigger-btn link deletePostBtn"\
+																						data-toggle="modal">\
+																						<i class="fas fa-trash mx-2  "></i>Delete\
+																					</a>\
+																				</li>\
+																			</ul>\
+																		</div>\
+																	</div>\
+																</div>\
+															</div>\
+															<div class="friend-info" data-post-id="' + postId + '">\
+																<figure>\
+																					<img src="/images/user/' + profileImage + '" alt="" style="width: 80px; height: 40px; border-radius: 50%;">\
+																</figure>\
+																<div class="friend-name">\
+																	<ins><a href="time-line.html" title="">' + firstName + ' ' + lastName + '</a></ins>\
+																	<span style = "color:#28a745" > Admin </span>\
+																	<span>published: ' + dateTime + '</span>\
+																</div>\
+																<div class="post-meta">\
+						<div class="description">\
+																		<p class="editableParagraph">' + enteredText + '</p>\
+																	</div>\
+																	<img title="'+ titels + '" class="ImgPreview" src="' + (uploadedImage ? URL.createObjectURL(uploadedImage) : '') + '" style="width: 870px; height: 470px;" alt="">\
+																	<div class="we-video-info">\
+																		<ul>\
+																			<li>\
+																				<span class="comment" data-toggle="tooltip" title="Comments">\
+																					<i class="fa fa-comments-o"></i>\
+																					<ins>0</ins>\
+																				</span>\
+																			</li>\
+																			<li>\
+																					 <span class="like" data-post-id="' + postId + '" data-liked="false">\
+												<i class="fa fa-heart"></i>\
+												<ins>0</ins>\
+											</span>\
+																			</li>\
+																			<li class="social-media">\
+																				<div class="menu">\
+																					<div class="btn trigger">\
+																						<i class="fa fa-share-alt" data-toggle="modal" data-target="#exampleModalCenter"></i>\
+																					</div>\
+																				</div>\
+																			</li>\
+																		</ul>\
+																	</div>\
+																</div>\
+															</div>\
+															<div class="coment-area">\
+																<ul class="we-comet comments-list">\
+																	<!-- Add comments here if needed -->\
+																</ul>\
+																<ul class="we-comet">\
+																	<li>\
+																		<a href="#" title="" class="showmore underline">\
+																			more comments\
+																		</a>\
+																	</li>\
+																	<li class="post-comment">\
+																		<div class="comet-avatar">\
+																					<img src="/images/user/' + profileImage + '" alt="" style="width: 80px; height: 40px;">\
+																		</div>\
+																		<div class="post-comt-box">\
+																			<form method="post">\
+																				<textarea placeholder="Post your comment"></textarea>\
+																				<div class="add-smiles">\
+																					<span class="em em-expressionless" title="add icon"></span>\
+																				</div>\
+																				<div class="smiles-bunch">\
+																					<i class="em em---1"></i>\
+																					<i class="em em-smiley"></i>\
+																					<i class="em em-anguished"></i>\
+																					<i class="em em-laughing"></i>\
+																					<i class="em em-angry"></i>\
+																					<i class="em em-astonished"></i>\
+																					<i class="em em-blush"></i>\
+																					<i class="em em-disappointed"></i>\
+																					<i class="em em-worried"></i>\
+																					<i class="em em-kissing_heart"></i>\
+																					<i class="em em-rage"></i>\
+																					<i class="em em-stuck_out_tongue"></i>\
+																				</div>\
+																				<button type="submit"></button>\
+																			</form>\
+																		</div>\
+																	</li>\
+																</ul>\
+															</div>\
+														</div>\
+													</div>');
+						$('.loadMoree').prepend(newPostDiv);
+						$('#POSTMODAL').hide()
+						$('body').removeClass('modal-open');
+						$('.modal-backdrop').remove();
+						document.getElementById("addPostTextArea").value = "";
+
+					},
+					error: function (xhr, status, error) {
+						console.log("Error adding post: " + error);
+						document.getElementById("POSTMODAL").style.display = "none";
+						document.body.classList.remove('modal-open');
+						var removedElements = [];
+						document.querySelectorAll('.modal-backdrop').forEach(function (element) {
+							removedElements.push(element);
+							element.remove();
+						});
+
+
+						modal.style.display = "block";
+
+						span.onclick = function () {
+							modal.style.display = "none";
+						}
+
+						// When the user clicks the edit button, perform your edit action
+						editButton.onclick = function () {
+							modal.style.display = "none";
+							document.getElementById("POSTMODAL").style.display = "block";
+							document.body.classList.add('modal-open');
+							removedElements.forEach(function (element) {
+								document.body.appendChild(element);
+							});
+						}
+
+						// When the user clicks the cancel button, close the modal
+						cancelButton.onclick = function () {
+							modal.style.display = "none";
+							document.getElementById("addPostTextArea").value = "";
+
+						}
+
+
+					}
+				});
+
+
+
+
+
+			});
+
+
+		});
+	</script>
+	@* update post *@
+	<script>
+		$(document).ready(function () {
+			// update edited text
+
+			var editTextarea
+			var editableParagraph
+			$('.loadMoree').on('click', '.editTextButton', function () {
+				var post = $(this).closest('.central-meta');
+				const postId = post.data('postid');
+				editableParagraph = post.find('.editableParagraph');
+				var postImage = post.find('.ImgPreview');
+				editTextarea = $('#EDITMODAL').find('.editTextarea');
+
+				// Set the initial values in the modal
+				editTextarea.val(editableParagraph.text());
+				$('.modal-image').attr('src', postImage.attr('src'));
+
+				// Store the postId in a data attribute
+				$('#EDITMODAL').data('postid', postId);
+			});
+
+			// Event listener for updating text
+			$('.updateButtonMODAL').on('click', function (e) {
+				e.preventDefault();
+
+				// Retrieve the postId from the modal
+				var postId = $('#EDITMODAL').data('postid');
+
+				// Retrieve the new text from the textarea
+				var newText = editTextarea.val();
+				editableParagraph.text(newText);
+				// Send an AJAX request to update the post
+				$.ajax({
+					url: '/Group/EditPost',
+					type: 'POST',
+					data: {
+						postId: postId,
+						NewText: newText,
+					},
+					success: function (response) {
+						console.log("Post updated successfully");
+					},
+					error: function (xhr, status, error) {
+						console.error("Error updating post: " + error);
+					}
+				});
+
+				// Close the modal
+				$('#EDITMODAL').hide();
+				$('body').removeClass('modal-open');
+				$('.modal-backdrop').remove();
+			});
+
+		});
+
+	</script>
+	@* like and comment *@
+	<script>
+
+
+		$(document).ready(function () {
+			$('.loadMoree').on('click', '.like', function () {
+				var icon = $(this).find('i');
+				var count = $(this).find('ins');
+				var postId = $(this).data('post-id');
+
+				if (icon.hasClass('filled')) {
+					// Unlike the post
+					icon.removeClass('filled');
+					count.text(parseInt(count.text()) - 1);
+					// Perform the unlike action (e.g., send request to server to remove like)
+					jQuery.ajax({
+						url: '/UserProfile/RemoveLike',
+						type: 'POST',
+						data: {
+							postId: postId,
+						},
+						success: function (response) {
+							console.log("hhhh");
+
+						},
+						error: function (xhr, status, error) {
+							console.log("hhhh2");
+						}
+					});
+				} else {
+					// Like the post
+					icon.addClass('filled');
+					count.text(parseInt(count.text()) + 1);
+
+					// Perform the like action (e.g., send request to server to add like)
+					jQuery.ajax({
+						url: '/UserProfile/AddLike',
+						type: 'POST',
+						data: {
+							postId: postId,
+
+						},
+						success: function (response) {
+							console.log("hhhh");
+
+						},
+						error: function (xhr, status, error) {
+							console.log("hhhh2");
+						}
+					});
+				}
+			});
+		});
+
+
+
+
+		$(document).on('keydown', '.post-comt-box textarea', function (event) {
+			if (event.keyCode == 13) {
+				var comment = jQuery(this).val();
+				var parent = jQuery(this).closest(".item");
+				var postId = parent.find(".friend-info").data('post-id');
+				var profileImage = '@Model.CurrentUser.ProfileImage';
+				var firstName = '@Model.CurrentUser.FirstName';
+				var userId = '@Model.CurrentUser.Id';
+				var lastName = '@Model.CurrentUser.LastName';
+				var time = '@DateTime.Now';
+				var src = "/images/user/";
+				var comment_HTML = '<div class="comment" data-post-id="' + postId + '"><div class="comet-avatar"><img src="' + src + profileImage + '" alt=""/></div><div class="we-comment"><div class="coment-head"><h5><a href="/Profile/Index?Id=' + userId + '" title="">' + firstName + ' ' + lastName + '</a></h5>																									<span style="background-color:#28a745;color:white;width: 55px;margin-left: 4px;">Admin</span><span>' + time + '</span><a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a></div><p>' + comment + '</p></div></div>';
+
+				parent.find(".comments-list").append('<li>' + comment_HTML + '</li>');
+
+				jQuery.ajax({
+					url: '/UserProfile/AddComment',
+					type: 'POST',
+					data: {
+						postId: postId,
+						text: comment
+					},
+					success: function (response) {
+						console.log("hhhh");
+						parent.find(".comment ins").text(response.commentCount);
+					},
+					error: function (xhr, status, error) {
+						// Handle error
+					}
+				});
+
+				jQuery(this).val('');
+			}
+		});
+
+
+	</script>
+}

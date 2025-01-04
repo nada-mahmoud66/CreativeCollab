@@ -1,0 +1,71 @@
+﻿@model serchResult;
+
+<style></style>
+<div class="central-meta">
+<ul class="nearby-contct" id="groupList1">
+    @foreach (var result in Model.users.Take(3))
+    {
+			<li>
+				<div class="nearly-pepls col">
+				@* 	<figure>
+						<a asp-controller="Profile" asp-action="Index" asp-route-Id="@result.Id" title="">
+							<img class="profile-img" src="~/images/user/@result.ProfileImage" style="width:45px;height:45px" alt="">
+						</a>
+					 </figure>*@
+					<div class="pepl-info col">
+						<h4><a asp-controller="Profile" asp-action="Index" asp-route-Id="@result.Id" title="">@result.FirstName @result.LastName</a></h4>
+					</div>
+				</div>
+			</li>
+
+
+		}
+	@foreach (var result in Model.groups.Take(3))
+	{
+		<li>
+			<div class="nearly-pepls">
+			
+				<div class="pepl-info ">
+					<h4><a href="/Group/ClickedGroup?groupId=@result.GroupId" title="">@result.GroupName</a></h4>
+				</div>
+				@* 	<figure>
+						<a href="/Group/ClickedGroup?groupId=@result.GroupId" title="">
+							<img src="~/images/groups/@result.CoverImage" style=" width:45px;height:45px" alt="">
+						</a>
+					</figure> *@
+			</div>
+		</li>
+	}
+
+	
+		@if (Model.users.Count == 0 && Model.groups.Count == 0 && Model.posts.Count == 0) 
+		{
+			<li>
+				
+				No matching results
+
+			</li>
+		}
+		else if (Model.users.Count == 0 && Model.groups.Count == 0 && Model.posts.Count != 0)
+		{
+
+			<li>
+				<a href="/search/SearchText?searchTerm=@Model.sub" title="" style="color:#088dcd">
+					View posts results
+				</a>
+
+			</li>
+		}
+		else
+		{
+			<li>
+				<a href="/search/SearchText?searchTerm=@Model.sub" title="" style="color:#088dcd">
+					View results
+				</a>
+
+			</li>
+		}
+		
+
+</ul>
+</div>

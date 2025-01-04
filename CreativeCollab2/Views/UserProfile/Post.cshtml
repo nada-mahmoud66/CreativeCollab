@@ -1,0 +1,704 @@
+﻿@model VmSinglePost
+@{
+	Layout = null;
+	Layout = "TimeLineLayout";
+}
+<style>
+	.no-content {
+		background-color: #f2f2f2;
+		border: 1px solid #dcdcdc;
+		border-radius: 4px;
+		padding: 20px;
+		text-align: center;
+		
+		/* color: #333; /* Darker text color for more impact */ */ font-family: 'Arial', sans-serif;
+		font-size: 18px; /* Larger font size */
+		font-weight: bold; /* Bold font weight */
+		text-shadow: 1px 1px #fff; /* White text shadow for depth */
+	}
+</style>
+<div class="theme-layout">
+	<div class="gap gray-bg">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="row" id="page-contents">
+						<div class="col-lg-3  ">
+							<aside class="sidebar stick-widget">
+								@Html.Partial("pvEditSideBar", Model.ApplicationUser)
+								<!-- Edit info -->
+								@Html.Partial("pvShortcutsSideBar" , Model.ApplicationUser)
+								<!-- shortcut info -->
+
+							</aside>
+						</div><!-- sidebar -->
+						<div class="col-lg-6">
+
+							<div id="change-password" class="tab2-content" style="display: none;">
+								<!-- Change password content -->
+								<h2>Change password</h2>
+								<p>This is the change password content.</p>
+							</div>
+							@* ola  *@
+
+							<div class="loadMoree tab2-pane active tab2-content" id="timeline">
+								@{
+									var i = 0;
+								}
+								@if (ViewBag.block==1)
+								{
+									<div class="no-content"> 
+										No content To show
+									</div>
+								}else{
+								@if (!(bool)(Model.post.IsDeleted))
+								{
+									<div class="central-meta item" data-postid="@Model.post.PostId" style="display: inline-block;">
+										<div class="user-post">
+
+											@if (@Model.post.User.Id == Model.ApplicationUser.Id)
+											{
+												<div id="container">
+													<div id="menu-wrap">
+													<input type="checkbox" class="toggler">
+													<div class="dots">
+														<div></div>
+													</div>
+													
+													<div class="menu">
+														<div>
+															<ul>
+
+																<li>
+																	<a href="#EDITMODAL" class="trigger-btn link editTextButton"
+																	data-toggle="modal"
+																	style="margin-left: -20px;">
+																		<i class="fas fa-pen mx-2"></i>Edit
+																	</a>
+																</li>
+																<li>
+																	<a href="#myModal" class="trigger-btn link deletePostBtn"
+																	data-toggle="modal">
+																		<i class="fas fa-trash mx-2  "></i>Delete
+																	</a>
+																</li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</div>
+											}
+											<div class="friend-info" data-post-id="@Model.post.PostId">
+												<figure>
+													<img src="~/images/user/@Model.post.User.ProfileImage" alt="">
+												</figure>
+												<div class="friend-name">
+													<ins>
+														<a asp-controller="Profile" asp-action="Index" asp-route-Id="@Model.ApplicationUser.Id" title="">
+															@Model.post.User.FirstName @Model.post.User.LastName
+														</a>
+														@if (Model.post.GroupId != null)
+														{
+															<a asp-action="GroupMember" asp-controller="Group" asp-route-groupId="@Model.post.GroupId" class="group-link">
+																<span class="group-arrow">  >  </span>@Model.post.Group.GroupName
+															</a>
+														}
+													</ins>
+													<span>published: @Model.post.PostDateTime</span>
+												</div>
+												<div class="post-meta">
+													<div class="description">
+
+														<p class="editableParagraph">
+															@Model.post.PostText
+
+														</p>
+													</div>
+
+													<img title="@ViewBag.titels" class="ImgPreview" src="~/images/post/@Model.post.PostImage.ImageName" style="width: 870px; height: 470px;" alt="">
+													@{
+														i++;
+													}
+													<div class="we-video-info">
+														<ul>
+
+															<li>
+																<span class="comment" data-toggle="tooltip" title="" data-original-title="Comments">
+																	<i class="fa fa-comments-o"></i>
+																	<ins>@Model.post.Comments.Count</ins>
+																</span>
+															</li>
+															<li>
+																<span class="like" data-post-id="@Model.post.PostId" data-liked="@Model.IsLikedByCurrentUser">
+																	<i class="fa fa-heart @if (Model.IsLikedByCurrentUser){
+															    <text>filled</text>}"></i>
+																	<ins>@Model.post.Likes.Count</ins>
+																</span>
+															</li>
+
+
+
+
+															<li class="social-media">
+																<div class="menu">
+																	<div class="btn trigger">
+																		<i class="fa fa-share-alt" data-toggle="modal" data-target="#exampleModalCenter"></i>
+																	</div>
+
+																</div>
+
+
+
+
+															</li>
+
+
+														</ul>
+
+
+													</div>
+
+													<!-- Button trigger modal -->
+													<!-- Modal -->
+
+
+												</div>
+											</div>
+
+
+											<div class="coment-area">
+												<ul class="we-comet comments-list ">
+													@foreach (var comment in Model.post.Comments)
+													{
+														<li class="comment " data-post-id="@comment.PostId ">
+															@if (comment.ParentCommentId == null)
+															{
+																<div class="comet-avatar">
+																		<img src="~/images/user/@comment.User.ProfileImage" style="width: 40px; height: 40px; border-radius: 50%;" alt="">
+																</div>
+																<div class="we-comment ">
+																	<div class="coment-head">
+																		<h5>
+																				<a asp-controller="Profile" asp-action="Index" asp-route-Id="@comment.User.Id" title="">
+																				@comment.User.FirstName
+																				@comment.User.LastName
+																			</a>
+																		</h5>
+																		<span>@comment.CommentDate</span>
+																		<a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+																	</div>
+																	<p>
+																		@comment.CommentText
+																	</p>
+																</div>
+															}
+															@* reply *@
+															<div>
+
+																<ul>
+																	@foreach (var reply in Model.post.Comments)
+																	{
+																		@if (reply.ParentCommentId == comment.CommentId)
+																		{
+
+																			<li class="comment" data-post-id="@reply.PostId">
+																				<div class="comet-avatar">
+																					<img src="~/images/user/@reply.User.ProfileImage" alt="">
+																				</div>
+																				<div class="we-comment">
+																					<div class="coment-head">
+																							<h5><a asp-controller="Profile" asp-action="Index" asp-route-Id="@reply.User.Id" title="">@reply.User.FirstName</a></h5>
+																						<span>@reply.CommentDate</span>
+																						<a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+																					</div>
+																					<p>
+																						@reply.CommentText
+																					</p>
+																				</div>
+																			</li>
+																		}
+																	}
+																</ul>
+															</div>
+														</li>
+
+
+													}
+
+
+
+												</ul>
+
+												<ul class="we-comet">
+													<li>
+														<a href="#" title="" class="showmore underline">
+															more
+															comments
+														</a>
+													</li>
+													<li class="post-comment">
+														<div class="comet-avatar">
+																<img src="~/images/user/@Model.ApplicationUser.ProfileImage" style="width: 40px; height: 40px; border-radius: 50%;" alt="">
+														</div>
+														<div class="post-comt-box">
+															<form method="post">
+																<textarea placeholder="Post your comment"></textarea>
+																<div class="add-smiles">
+																	<span class="em em-expressionless" title="add icon"></span>
+																</div>
+																<div class="smiles-bunch">
+																	<i class="em em---1"></i>
+																	<i class="em em-smiley"></i>
+																	<i class="em em-anguished"></i>
+																	<i class="em em-laughing"></i>
+																	<i class="em em-angry"></i>
+																	<i class="em em-astonished"></i>
+																	<i class="em em-blush"></i>
+																	<i class="em em-disappointed"></i>
+																	<i class="em em-worried"></i>
+																	<i class="em em-kissing_heart"></i>
+																	<i class="em em-rage"></i>
+																	<i class="em em-stuck_out_tongue"></i>
+																</div>
+																<button type="submit"></button>
+															</form>
+														</div>
+													</li>
+												</ul>
+											</div>
+
+
+
+										</div>
+									</div>
+								}
+							    }
+							</div>
+							@* end ola *@
+
+
+						</div><!-- centerl meta -->
+
+						<div class="col-lg-3">
+							@Html.Partial("pvSideBarFollowingList" ,Model.ApplicationUser)
+						</div>
+						<!-- share Modal  -->
+						<div class="modal fade" id="exampleModalCenter" tabindex="-1"
+							 role="dialog" aria-labelledby="exampleModalCenterTitle"
+							 aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered"
+								 role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title"
+											id="exampleModalLongTitle">
+											Share Post to
+										</h5>
+										<button type="button" class="close"
+												data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<div class="tab-pane active fade show " id="frends">
+											<div class="row">
+												<h4 style="font-size:30px; font-weight: bold;  width:81%; margin-left:15px;">Following:</h4>
+												<div class="checkbox-wrapper-31" style="margin-top:8px;">
+
+													<input type="checkbox" class="check" id="checkAll" />
+													<svg viewBox="0 0 35.6 35.6">
+														<circle class="background" cx="17.8" cy="17.8" r="17.8"></circle>
+														<circle class="stroke" cx="17.8" cy="17.8" r="14.37"></circle>
+														<polyline class="check" points="11.78 18.12 15.55 22.23 25.17 12.87"></polyline>
+													</svg>
+												</div>
+											</div>
+
+											<input type="text" id="filterInput" placeholder="Search...">
+											<ul class="send-ppl" style="margin-top: 8px;">
+												@foreach (var friend in Model.ApplicationUser.Followings)
+												{
+													<li>
+														<div class="n-pepls">
+
+															<figure>
+																<a href="time-line.html" title=""><img src="~/images/user/@friend.ProfileImage" alt=""></a>
+															</figure>
+															<div class="ppl-info">
+																<h4><a href="time-line.html" title="">@friend.FirstName @friend.LastName</a></h4>
+
+															</div>
+														</div>
+														<div class="checkbox-wrapper-31">
+
+															<input type="checkbox" class="check" />
+															<svg viewBox="0 0 35.6 35.6">
+																<circle class="background" cx="17.8" cy="17.8" r="17.8"></circle>
+																<circle class="stroke" cx="17.8" cy="17.8" r="14.37"></circle>
+																<polyline class="check" points="11.78 18.12 15.55 22.23 25.17 12.87"></polyline>
+															</svg>
+														</div>
+													</li>
+
+												}
+											</ul>
+
+										</div>
+									</div>
+									<div class="modal-footer sendbtn">
+										<button class="button success">Send </button>
+
+									</div>
+								</div>
+							</div>
+							<div class="description">
+
+								<p>
+									World's most beautiful car in Curabitur <a href="#"
+															 title="">#test drive booking !</a> the most
+									beatuiful car available in america and the saudia
+									arabia, you can book your test drive by our official
+									website
+								</p>
+							</div>
+						</div>
+						<!--  edit modal -->
+						<div class="modal  fade" id="EDITMODAL" tabindex="-1" role="dialog"
+							 aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalLongTitle">
+											Edit
+											Post
+										</h5>
+										<button type="button" class="close" data-dismiss="modal"
+												aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<form action="">
+											<div class="post-meta">
+
+												<img class="modal-image" class="preview1"
+													 src="" alt="">
+
+												<textarea rows='3' data-min-rows='3' contenteditable="true" class="editTextarea"
+														  autofocus> </textarea>
+											</div>
+										</form>
+
+									</div>
+									<div class="modal-footer editbtn">
+
+										<button class="button updateButtonMODAL">update</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--delete modal-->
+						<div id="myModal" class="modal fade">
+							<div class="modal-dialog modal-confirm">
+								<div class="modal-content">
+									<div class="modal-header flex-column">
+										<div class="icon-box">
+											<i class="fas fa-trash mx-2"></i>
+										</div>
+										<h4 class="modal-title w-100">Are you sure?</h4>
+										<button type="button" class="close" data-dismiss="modal"
+												aria-hidden="true">
+											&times;
+										</button>
+									</div>
+									<div class="modal-body">
+										<p>
+											Do you really want to delete these records? This
+											process cannot be undone.
+										</p>
+									</div>
+									<div class="modal-footer justify-content-center">
+										<button type="button" class="btn btn-secondary"
+												data-dismiss="modal">
+											Cancel
+										</button>
+										<button type="button"
+												class="btn btn-danger" id="confirmDelete">
+											Delete
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="side-panel">
+	<h4 class="panel-title">General Setting</h4>
+	<form method="post">
+		<div class="setting-row">
+			<span>use night mode</span>
+			<input type="checkbox" id="nightmode1" />
+			<label for="nightmode1" data-on-label="ON" data-off-label="OFF"></label>
+		</div>
+		<div class="setting-row">
+			<span>Notifications</span>
+			<input type="checkbox" id="switch22" />
+			<label for="switch22" data-on-label="ON" data-off-label="OFF"></label>
+		</div>
+		<div class="setting-row">
+			<span>Notification sound</span>
+			<input type="checkbox" id="switch33" />
+			<label for="switch33" data-on-label="ON" data-off-label="OFF"></label>
+		</div>
+		<div class="setting-row">
+			<span>My profile</span>
+			<input type="checkbox" id="switch44" />
+			<label for="switch44" data-on-label="ON" data-off-label="OFF"></label>
+		</div>
+		<div class="setting-row">
+			<span>Show profile</span>
+			<input type="checkbox" id="switch55" />
+			<label for="switch55" data-on-label="ON" data-off-label="OFF"></label>
+		</div>
+	</form>
+	<h4 class="panel-title">Account Setting</h4>
+	<form method="post">
+		<div class="setting-row">
+			<span>Sub users</span>
+			<input type="checkbox" id="switch66" />
+			<label for="switch66" data-on-label="ON" data-off-label="OFF"></label>
+		</div>
+		<div class="setting-row">
+			<span>personal account</span>
+			<input type="checkbox" id="switch77" />
+			<label for="switch77" data-on-label="ON" data-off-label="OFF"></label>
+		</div>
+		<div class="setting-row">
+			<span>Business account</span>
+			<input type="checkbox" id="switch88" />
+			<label for="switch88" data-on-label="ON" data-off-label="OFF"></label>
+		</div>
+		<div class="setting-row">
+			<span>Show me online</span>
+			<input type="checkbox" id="switch99" />
+			<label for="switch99" data-on-label="ON" data-off-label="OFF"></label>
+		</div>
+		<div class="setting-row">
+			<span>Delete history</span>
+			<input type="checkbox" id="switch101" />
+			<label for="switch101" data-on-label="ON" data-off-label="OFF"></label>
+		</div>
+		<div class="setting-row">
+			<span>Expose author name</span>
+			<input type="checkbox" id="switch111" />
+			<label for="switch111" data-on-label="ON" data-off-label="OFF"></label>
+		</div>
+	</form>
+</div><!-- settings side panel -->
+@section scripts {
+	@* delete post *@
+	<script>
+		$(document).ready(function () {
+			//delete post
+
+			$(document).on('click', '.deletePostBtn', function () {
+				// Your code here
+				console.log("one 1 ");
+				const postId = $(this).closest('.central-meta').data('postid');
+				console.log("one");
+				// Set up the modal with the specific post ID
+				$('#myModal').data('postid', postId).modal('show');
+			});
+
+			// Event listener for confirm delete button in modal
+			$('#confirmDelete').on('click', function () {
+				console.log("two");
+				const postId = $('#myModal').data('postid');
+
+				// Perform deletion and remove the post element from the GUI
+				deletePost(postId);
+				$('#myModal').modal('hide');
+				$('body').removeClass('modal-open');
+				$('.modal-backdrop').remove();
+				// Hide the modal
+				console.log("oyuy");
+				console.log("postID: " + postId);
+
+				jQuery.ajax({
+					url: '/UserProfile/RemovePost',
+					type: 'POST',
+					data: {
+						postId: postId
+					},
+					success: function (response) {
+						console.log("hhhh");
+
+					},
+					error: function (xhr, status, error) {
+						// Handle error
+						console.log("hhhha354");
+					}
+				});
+
+
+			});
+			// Ensure removal of the modal backdrop
+
+			function deletePost(postId) {
+				// Remove the post element from the GUI
+				$(`.central-meta[data-postid=${postId}]`).remove();
+				console.log("three");
+
+			}
+		});
+	</script>
+	@* update post *@
+	<script>
+		$(document).ready(function () {
+			// update edited text
+			$('.loadMoree').on('click', '.editTextButton', function () {
+				var post = $(this).closest('.central-meta');
+				const postId = post.data('postid');
+				var editableParagraph = post.find('.editableParagraph');
+				var postImage = post.find('.ImgPreview');
+				var editTextarea = $('#EDITMODAL').find('.editTextarea');
+
+				// Set the initial values in the modal
+				editTextarea.val(editableParagraph.text());
+				$('.modal-image').attr('src', postImage.attr('src'));
+
+				// Event listener for updating text
+				$('.updateButtonMODAL').on('click', function (e) {
+					e.preventDefault();
+
+					// Retrieve the new text from the textarea
+					var newText = editTextarea.val();
+
+					// Update the paragraph with the new text
+					editableParagraph.text(newText);
+
+					// Close the modal
+					$('#EDITMODAL').modal('hide');
+					$('body').removeClass('modal-open');
+					$('.modal-backdrop').remove();
+
+					// Send an AJAX request to update the post
+					$.ajax({
+						url: '/UserProfile/UpdatePost',
+						type: 'POST',
+						data: {
+							postId: postId,
+							NewText: newText,
+						},
+						success: function (response) {
+							console.log("Post updated successfully");
+						},
+						error: function (xhr, status, error) {
+							console.error("Error updating post: " + error);
+						}
+					});
+				});
+			});
+		});
+
+	</script>
+	@* like and comment *@
+	<script>
+
+
+		$(document).ready(function () {
+			$('.loadMoree').on('click', '.like', function () {
+				var icon = $(this).find('i');
+				var count = $(this).find('ins');
+				var postId = $(this).data('post-id');
+
+				if (icon.hasClass('filled')) {
+					// Unlike the post
+					icon.removeClass('filled');
+					count.text(parseInt(count.text()) - 1);
+					// Perform the unlike action (e.g., send request to server to remove like)
+					jQuery.ajax({
+						url: '/UserProfile/RemoveLike',
+						type: 'POST',
+						data: {
+							postId: postId,
+
+						},
+						success: function (response) {
+							console.log("hhhh");
+
+						},
+						error: function (xhr, status, error) {
+							console.log("hhhh2");
+						}
+					});
+				} else {
+					// Like the post
+					icon.addClass('filled');
+					count.text(parseInt(count.text()) + 1);
+
+					// Perform the like action (e.g., send request to server to add like)
+					jQuery.ajax({
+						url: '/UserProfile/AddLike',
+						type: 'POST',
+						data: {
+							postId: postId,
+
+						},
+						success: function (response) {
+							console.log("hhhh");
+
+						},
+						error: function (xhr, status, error) {
+							console.log("hhhh2");
+						}
+					});
+				}
+			});
+		});
+
+
+
+
+		$(document).on('keydown', '.post-comt-box textarea', function (event) {
+			if (event.keyCode == 13) {
+				var comment = jQuery(this).val();
+				var parent = jQuery(this).closest(".item");
+				var postId = parent.find(".friend-info").data('post-id');
+				var profileImage = '@Model.ApplicationUser.ProfileImage';
+				var firstName = '@Model.ApplicationUser.FirstName';
+				var lastName = '@Model.ApplicationUser.LastName';
+				var time = '@DateTime.Now';
+				var src = "/images/user/";
+				var comment_HTML = '<div class="comment" data-post-id="' + postId + '"><div class="comet-avatar"><img src="' + src + profileImage + '" alt=""/></div><div class="we-comment"><div class="coment-head"><h5><a href="time-line.html" title="">' + firstName + ' ' + lastName + '</a></h5><span>' + time + '</span><a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a></div><p>' + comment + '</p></div></div>';
+
+				parent.find(".comments-list").append('<li>' + comment_HTML + '</li>');
+
+				jQuery.ajax({
+					url: '/UserProfile/AddComment',
+					type: 'POST',
+					data: {
+						postId: postId,
+						text: comment
+					},
+					success: function (response) {
+						console.log("hhhh");
+						parent.find(".comment ins").text(response.commentCount);
+					},
+					error: function (xhr, status, error) {
+						// Handle error
+					}
+				});
+
+				jQuery(this).val('');
+			}
+		});
+
+
+	</script>
+	}

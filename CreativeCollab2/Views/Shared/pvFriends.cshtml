@@ -1,0 +1,71 @@
+﻿@model ApplicationUser
+
+<div id="friends" class="tab2-pane tab2-content">
+	<div class="central-meta ">
+ 	  <div class="frnds">
+		<ul class="nav nav-tabs">
+				<li class="nav-item"><a class="active" href="#frends" data-toggle="tab">Followers</a> <span id="followerCount">@Model.Followers.Count</span></li>
+				<li class="nav-item"><a class="" href="#frends-req" data-toggle="tab">Followings</a><span id="followingCount">@Model.Followings.Count</span></li>
+		</ul>
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<div class=" tab-pane active fade show" id="frends">
+					<div class="searchjoine" style="margin-top: 15px;"></div>
+					<ul class="nearby-contct" id="groupList">
+					@foreach(var follower in Model.Followers){
+							<li class="unique-li-class">
+						<div class="nearly-pepls">
+							<figure>
+										<a asp-controller="Profile" asp-action="Index" asp-route-id="@follower.Id">
+											<img src="~/images/user/@follower.ProfileImage" style="width: 60px; height: 40px;" alt="">
+										</a>
+
+							</figure>
+							<div class="pepl-info">
+										<h4><a asp-controller="Profile" asp-action="Index" asp-route-id="@follower.Id" title="">@follower.FirstName  @follower.LastName</a></h4>
+										@if (Model.Id == ViewBag.meID)
+										{
+											<a href="#" title="" class="add-butn more-action remove-btn" data-ripple="" data-followerid="@follower.Id" style="margin-right:-70px;">Remove</a>
+										}
+										@* 	@if (!Model.Followings.Select(a=>a.Id).ToList().Contains(follower.Id))
+										{
+											<a href="#" title="" class="add-butn" data-ripple="">Follow</a>
+
+										}
+										else {
+											<a href="#" title="" class="add-butn" data-ripple="">Following</a>
+										} *@
+				@* 						<a href="#" title="" class="add-butn follow-btn" data-ripple="">  <span class="follow-status">Following</span></a> *@
+							</div>
+						</div>
+					</li>
+					}
+				</ul>
+				@* <div class=""><button class="btn-view"></button></div> *@
+			</div>
+			<div class=" tab-pane fade" id="frends-req">
+					<div class="searchjoine" style="margin-top: 15px;"></div>
+					<ul class="nearby-contct" id="groupList">
+						@foreach (var following in Model.Followings){
+							<li class="unique-li-class">
+						<div class="nearly-pepls">
+							<figure>
+										<a asp-controller="Profile" asp-action="Index" asp-route-id="@following.Id" title=""><img src="~/images/user/@following.ProfileImage" style="width:50px; height:50px;" alt=""></a>
+							</figure>
+							<div class="pepl-info">
+										<h4><a asp-controller="Profile" asp-action="Index" asp-route-id="@following.Id" title="">@following.FirstName  @following.LastName</a></h4>
+										@if (Model.Id == ViewBag.meID)
+										{
+											<a href="#" title="" class="add-butn more-action unfollow-btn" data-ripple="" data-followingid="@following.Id" style="margin-right:-50px;">Unfollow</a>
+										 } 
+									</div>
+						</div>
+					</li>
+					}
+				</ul>
+				@* <button class="btn-view"></button> *@
+			</div>
+		</div>
+	</div>
+  </div>
+</div>

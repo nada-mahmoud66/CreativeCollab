@@ -1,0 +1,441 @@
+﻿@model List<Post>
+@{
+	Layout = null;
+	Layout = "TimeLineLayout";
+}
+<style>
+	.no-content {
+		background-color: #f2f2f2;
+		border: 1px solid #dcdcdc;
+		border-radius: 4px;
+		padding: 20px;
+		text-align: center;
+		/* color: #333; /* Darker text color for more impact */ */ font-family: 'Arial', sans-serif;
+		font-size: 18px; /* Larger font size */
+		font-weight: bold; /* Bold font weight */
+		text-shadow: 1px 1px #fff; /* White text shadow for depth */
+	}
+
+</style>
+<body>
+
+	<div class="theme-layout">
+
+		<section>
+			<div class="feature-photo">
+				<figure id="himCover"><img src="~/images/user/@ViewBag.him.CoverImage" style="width: 1366px; height: 400px" alt=""></figure>
+				<div class="add-btn">
+					<span id="followersCount">@ViewBag.him.Followers.Count followers</span>
+					<div class="btn-group ml-3" role="group" aria-label="Basic example">
+						@if (ViewBag.Flag)
+						{
+							<a href="#" title="" class="btn btn-secondary unfollow-btn" data-ripple="" data-followingid="@ViewBag.him.Id">Unfollow</a>
+						}
+						else
+						{
+							<a href="#" title="" class="btn btn-primary unfollow-btn" data-ripple="" data-followingid="@ViewBag.him.Id">Follow</a>
+						}
+						<a id="sendMessageProfile" data-user-firstname="@ViewBag.him.FirstName" data-user-lastname="@ViewBag.him.LastName" data-user-id="@ViewBag.him.Id" data-profile-image="@ViewBag.him.ProfileImage" href="#" title="" class="btn btn-info" data-ripple="">Send a Message</a>
+						<a id="blockBtn" class="btn btn-info danger" data-ripple="" style="background-color:darkred; color:white;">Block</a>
+
+					</div>
+				</div>
+
+
+
+				<div class="container-fluid">
+					<div class="row merged">
+						<div class="col-lg-2 col-sm-3">
+							<div class="user-avatar">
+								<figure id="homProfile">
+									<img src="~/images/user/@ViewBag.him.ProfileImage" style="width: 200px; height: 185px;" alt="">
+
+
+								</figure>
+							</div>
+						</div>
+						<div class="col-lg-10 col-sm-9">
+							<div class="timeline-info">
+								<ul>
+									<li class="admin-name">
+										<h5>@ViewBag.him.FirstName @ViewBag.him.LastName</h5>
+
+									</li>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section><!-- top area -->
+
+		<section>
+			<div class="gap gray-bg">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="row" id="page-contents">
+								<div class="col-lg-3">
+									<aside class="sidebar static">
+
+										<div class="widget stick-widget">
+											<h4 class="widget-title">Shortcuts</h4>
+											<ul class="naves">
+
+												<li>
+													<i class="ti-files"></i>
+													<a href="/UserProfile/Index" title="">My profile</a>
+												</li>
+												<li>
+													<i class="ti-comments-smiley"></i>
+													<a id="myLink" asp-controller="Chat" asp-action="Index"> Chats</a>
+
+												</li>
+											</ul>
+										</div><!-- Shortcuts -->
+
+									</aside>
+								</div><!-- sidebar -->
+								<div class="col-lg-6">
+									<div class="no-content">No content to show</div>
+
+								</div><!-- centerl meta -->
+								<div class="col-lg-3">
+									<!-- sidebar -->@Html.Partial("pvSideBarFollowingList", (ApplicationUser)ViewBag.me)
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+
+
+	</div>
+	<div class="side-panel">
+		<h4 class="panel-title">General Setting</h4>
+		<form method="post">
+			<div class="setting-row">
+				<span>use night mode</span>
+				<input type="checkbox" id="nightmode1" />
+				<label for="nightmode1" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Notifications</span>
+				<input type="checkbox" id="switch22" />
+				<label for="switch22" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Notification sound</span>
+				<input type="checkbox" id="switch33" />
+				<label for="switch33" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>My profile</span>
+				<input type="checkbox" id="switch44" />
+				<label for="switch44" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Show profile</span>
+				<input type="checkbox" id="switch55" />
+				<label for="switch55" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+		</form>
+		<h4 class="panel-title">Account Setting</h4>
+		<form method="post">
+			<div class="setting-row">
+				<span>Sub users</span>
+				<input type="checkbox" id="switch66" />
+				<label for="switch66" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>personal account</span>
+				<input type="checkbox" id="switch77" />
+				<label for="switch77" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Business account</span>
+				<input type="checkbox" id="switch88" />
+				<label for="switch88" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Show me online</span>
+				<input type="checkbox" id="switch99" />
+				<label for="switch99" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Delete history</span>
+				<input type="checkbox" id="switch101" />
+				<label for="switch101" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+			<div class="setting-row">
+				<span>Expose author name</span>
+				<input type="checkbox" id="switch111" />
+				<label for="switch111" data-on-label="ON" data-off-label="OFF"></label>
+			</div>
+		</form>
+	</div><!-- side panel -->
+
+
+	<div id="FarahModal" class="FarahModal" style="display:none;">
+		<div class="FarahModal-content">
+			<span class="FarahClose" onclick="closeModal()">&times;</span>
+			<img id="scannedImage" src="" alt="Scanned Image">
+			<p>Scanning image...</p>
+		</div>
+	</div>	<!-- share Modal  -->
+	<!-- share Modal  -->
+	@Html.Partial("pvShareModal", (List<ApplicationUser>)ViewBag.me.Followings)
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+	<script src="~/js/main.min.js"></script>
+	<script src="~/js/script.js"></script>
+	<script src="~/js/map-init.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8c55_YHLvDHGACkQscgbGLtLRdxBDCfI"></script>
+
+	@* block script *@
+	<script>
+
+	</script>
+	<script>
+
+
+		$(document).ready(function () {
+			$('.loadMoree').on('click', '.like', function () {
+				var icon = $(this).find('i');
+				var count = $(this).find('ins');
+				var postId = $(this).data('post-id');
+				console.log("loke loggg");
+				if (icon.hasClass('filled')) {
+					// Unlike the post
+					icon.removeClass('filled');
+					count.text(parseInt(count.text()) - 1);
+					// Perform the unlike action (e.g., send request to server to remove like)
+					jQuery.ajax({
+						url: '/UserProfile/RemoveLike',
+						type: 'POST',
+						data: {
+							postId: postId,
+
+						},
+						success: function (response) {
+							console.log("hhhh");
+
+						},
+						error: function (xhr, status, error) {
+							console.log("hhhh2");
+						}
+					});
+				} else {
+					// Like the post
+					icon.addClass('filled');
+					count.text(parseInt(count.text()) + 1);
+
+					// Perform the like action (e.g., send request to server to add like)
+					jQuery.ajax({
+						url: '/UserProfile/AddLike',
+						type: 'POST',
+						data: {
+							postId: postId,
+
+						},
+						success: function (response) {
+							console.log("hhhh");
+
+						},
+						error: function (xhr, status, error) {
+							console.log("hhhh2");
+						}
+					});
+				}
+			});
+		});
+
+
+
+
+		$(document).on('keydown', '.post-comt-box textarea', function (event) {
+			if (event.keyCode == 13) {
+				var comment = jQuery(this).val();
+				var parent = jQuery(this).closest(".item");
+				var postId = parent.find(".friend-info").data('post-id');
+				var profileImage = '@ViewBag.me.ProfileImage';
+				var firstName = '@ViewBag.me.FirstName';
+				var lastName = '@ViewBag.me.LastName';
+				var time = '@DateTime.Now';
+				var src = "/images/user/";
+				var comment_HTML = '<div class="comment" data-post-id="' + postId + '"><div class="comet-avatar"><a href="/UserProfile/Index" title=""><img style="width: 45px; height: 45px; border-radius:50px" src="' + src + profileImage + '" alt=""/></a></div><div class="we-comment"><div class="coment-head"><h5><a href="/UserProfile/Index" title="">' + firstName + ' ' + lastName + '</a></h5><span>' + time + '</span><a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a></div><p>' + comment + '</p></div></div>';
+
+				parent.find(".comments-list").append('<li>' + comment_HTML + '</li>');
+
+				jQuery.ajax({
+					url: '/UserProfile/AddComment',
+					type: 'POST',
+					data: {
+						postId: postId,
+						text: comment
+					},
+					success: function (response) {
+						console.log("hhhh");
+						parent.find(".comment ins").text(response.commentCount);
+					},
+					error: function (xhr, status, error) {
+						// Handle error
+					}
+				});
+
+				jQuery(this).val('');
+			}
+		});
+
+
+	</script>
+	@* switch tabs *@
+	<script>
+
+		$(document).ready(function () {
+			// Show the initial active tab content
+			$('.tab2-pane').hide();
+			$('.tab2-content').hide();
+			$('.tab2-pane.active').show();
+			$('.tab3-content').hide();
+			$('.timeline-info a').click(function (e) {
+
+				var target = $(this).attr('data-target');
+				if ($(this).attr('data-target') !== "timeline") {
+					e.preventDefault();
+				}
+				$('.tab2-pane').hide(); // Hide all tab panes
+				$('.tab2-content').hide();
+				$('.tab3-content').hide();
+				$('.specialDiv').hide();
+				$('#' + target).show(); // Show the selected tab pane
+				$('.timeline-info a').removeClass('active');
+				$(this).addClass('active');
+			});
+			$('.naves a').click(function (e) {
+
+				var target = $(this).attr('href');
+				$('.tab2-content').hide();
+				$('.tab2-pane').hide(); // Hide all tab contents
+				$(target).show();
+				$('.timeline-info a').removeClass('active');
+
+
+			});
+		});
+
+
+
+	</script>
+
+	<script>
+		$(document).ready(function () {
+			// Use event delegation for dynamically added elements
+			$(document).on('click', '.unfollow-btn', function (event) {
+				// Prevent the default behavior of the anchor tag
+				event.preventDefault();
+				var followingId = $(this).data('followingid');
+
+				if ($(this).text().trim() !== "Follow") {
+					$.ajax({
+						url: '@Url.Action("RemoveFollowing", "UserProfile")',
+						type: 'POST',
+						data: { FollowingId: followingId },
+						success: function (response) {
+							if (response.success) {
+								console.log("okkkkkkkkkkkkkk");
+							} else {
+								console.log("not okkkkkkkkkkkkkk");
+							}
+						},
+						error: function (xhr, status, error) {
+
+						}
+					});
+
+					$(this).text('Follow');
+					$('#FollowTab').hide();
+					var countElement = $('#followersCount');
+					var currentCount = parseInt(countElement.text());
+					countElement.text(currentCount - 1 + " Followers");
+
+				} else {
+					$(this).text('UnFollow');
+					var countElement = $('#followersCount');
+					var currentCount = parseInt(countElement.text());
+					countElement.text(currentCount + 1 + " Followers");
+
+					$.ajax({
+						url: '@Url.Action("addFollow", "Profile")',
+						type: 'POST',
+						data: { FollowingId: followingId },
+						success: function (response) {
+							if (response.success) {
+								console.log("okkkkkkkkkkkkkk");
+							} else {
+								console.log("not okkkkkkkkkkkkkk");
+							}
+						},
+						error: function (xhr, status, error) {
+
+						}
+					});
+
+				}
+			});
+		});
+
+	</script>
+	<script>
+		// Get the FarahModal element
+		var FarahModal = document.getElementById('FarahModal');
+
+		// Get the image element inside the modal
+		var scannedImage = document.getElementById('scannedImage');
+
+		// Get the file input element
+		var fileInput = document.getElementById('fileInput');
+
+		// When the file input changes (image is uploaded)
+		fileInput.addEventListener('change', function () {
+			var file = this.files[0];
+
+			console.log("Image path:", file);
+			if (file) {
+				// Show the modal
+				FarahModal.style.display = 'block';
+
+				// Set the image source to the uploaded image
+				scannedImage.src = URL.createObjectURL(file);
+
+				// Wait for the image to load
+				scannedImage.onload = function () {
+					// Simulate a delay before hiding the modal (scanning effect)
+					setTimeout(function () {
+						// Hide the modal
+						FarahModal.style.display = 'none';
+
+						// Submit the form
+						document.getElementById('searchForm').submit();
+					}, 2000); // 2 seconds delay (adjust as needed)
+				};
+			}
+		});
+
+		// Close the modal
+		function closeModal() {
+			FarahModal.style.display = 'none';
+		}
+
+		function triggerFileInput() {
+			// Trigger the file input click
+			document.getElementById('fileInput').click();
+		}
+	</script>
+
+</body>

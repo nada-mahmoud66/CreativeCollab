@@ -1,0 +1,275 @@
+﻿@model InboxList
+@{
+	Layout = "TimeLineLayout";
+}
+<style>
+	#blockMsg {
+		border-color: #b5a9a9;
+		background-color: #f0f0f0;
+		border-block-style: solid;
+		text-align: center;
+		display:none;
+	}
+</style>
+<div class="theme-layout">
+	<section>
+		<div class="feature-photo">
+			@* cover *@
+			<figure><img src="~/images/user/@ViewBag.CoverImage" style="width: 1366px; height: 400px" alt=""></figure>
+			<div class="add-btn">
+				<span id="followerCountMain">@ViewBag.NumOfFollowers Followers</span>
+
+
+			</div>
+			<form method="post" id="uploadForm66" asp-controller="UserProfile" asp-action="EditCoverImage" class="edit-phto" enctype="multipart/form-data">
+				<i class="-camera-retro"></i>
+				<label class="fileContainer">
+					Edit Cover Photo
+					<input id="fileInput66" name="ProfileImage" type="file" />
+				</label>
+			</form>
+			<div class="container-fluid">
+				<div class="row merged">
+					<div class="col-lg-2 col-sm-3">
+						<div class="user-avatar">
+							<figure>
+								<img src="~/images/user/@ViewBag.ProfileImage" style="width: 200px; height: 185px;" alt="">
+								<form method="post" id="uploadForm55" asp-controller="UserProfile" asp-action="EditProfileImage" class="edit-phto" enctype="multipart/form-data">
+									<i class="-camera-retro"></i>
+									<label class="fileContainer">
+										Edit Display Photo
+										<input id="fileInput55" name="ProfileImage" type="file" />
+									</label>
+								</form>
+							</figure>
+						</div>
+					</div>
+					<div class="col-lg-10 col-sm-9">
+						<div class="timeline-info">
+							<ul>
+								<li class="admin-name">
+									<h5 id="fullName">@ViewBag.FirstName @ViewBag.LastName  </h5>
+								</li>
+								<li>
+									<a class="active" asp-controller="UserProfile" asp-action="Index" data-target="timeline">My posts</a>
+									@* <a class="" href="#photos" data-target="photos">Photos</a> *@
+									<a class="" href="#friends" data-target="friends">Follow</a>
+									<a class="" href="#groups" data-target="groups">Groups</a>
+									<a class="" asp-controller="Chat" asp-action="Index" data-target="Chat">Chats</a>
+									@* <a class="" href="#about" data-target="about">About</a> *@
+								</li>
+							</ul>
+						</div>
+						<div id="tabContent" style="display: none;"></div>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+<section>
+	<div class="gap gray-bg">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="row" id="page-contents">
+						<div class="col-lg-3  ">
+							<aside class="sidebar stick-widget">
+								@Html.Partial("pvEditSideBar", Model.User)
+								<!-- Edit info -->
+							
+							</aside>
+						</div><!-- sidebar -->
+						<div class="col-lg-6">
+							
+								<div id="chat" class="tab3-content active">
+									@* chat *@
+									<div class="central-meta">
+										<div class="messages">
+											<h5 class="f-title"><i class="ti-bell"></i>All Messages <span class="more-options"><i class="fa fa-ellipsis-h"></i></span></h5>
+											<div class="message-box">
+												<ul class="peoples">
+												@foreach(var follower in Model.Inbox)
+												{
+	
+													<li data-user-id="@follower.User.Id" data-user-image="@follower.User.ProfileImage" style="background-color: #f5f5f5;">
+
+														@if (follower.flag == 1){
+														<figure>
+																	<img src="~/images/user/DefaultMan.jpg" alt="">
+						
+														</figure>
+														}
+														else {
+														
+															<figure>
+																<img src="~/images/user/@follower.User.ProfileImage" alt="">
+
+															</figure>
+														}
+																
+															
+														<div class="people-name">
+															@if (follower.NumberOfUnreadMessages!=0){
+																<span> <span class="username">@follower.User.FirstName @follower.User.LastName   </span><span class="unread-numbers"> @follower.NumberOfUnreadMessages</span> </span>
+															}
+															else
+															{
+															//<span> <span class="username">@follower.User.FirstName @follower.User.LastName   </span><span class="unread-numbers"></span> </span>
+																<span> <span class="username">@follower.User.FirstName @follower.User.LastName   </span><span class="unread-numbers"> </span> </span>
+
+																//<span class="username">@follower.User.FirstName @follower.User.LastName <span class="unread-numbers"></span>   </span>
+															}
+														</div>
+													</li>
+												}
+												
+												</ul>
+											<div class="peoples-mesg-box " style="width: 60%;">
+
+												<div class="default-chat">
+													<h6>Select a chat to start messaging</h6>
+												</div>
+													<div class="conversation-head" style="display:none;">
+														<figure><img src="~/images/user/" alt=""></figure>
+														<a> <span></span> </a>
+														
+												     </div>
+												<ul class="chatting-area" id="chattingArea">
+														
+												</ul>
+												<div class="message-text-container" style="display:none;">
+													<form method="post" id="messageForm">
+														<div id="blockMsg" >This person is Unavaliable</div>
+														<textarea class="chatMessageText" id="messageText"></textarea>
+														<button type="button" id="sendMessageBtn" title="send"><i class="fa fa-paper-plane"></i></button>
+													</form>
+												</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							
+						
+							@Html.Partial("pvGroups", Model.User)
+
+							@Html.Partial("pvFriends", Model.User)
+
+						</div><!-- centerl meta -->
+						<div class="col-lg-3">
+							@Html.Partial("pvSideBarFollowingList", Model.User)
+						</div>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</div>
+
+
+@section scripts {
+	
+
+
+
+
+	<script>
+		document.getElementById('fileInput55').addEventListener('change', function (event) {
+			event.preventDefault(); // Prevent default behavior of file input
+			document.getElementById('uploadForm55').submit();
+			console.log("hhhhh2");
+		});
+	</script>
+	<script>
+		document.getElementById('fileInput66').addEventListener('change', function (event) {
+			event.preventDefault(); // Prevent default behavior of file input
+			document.getElementById('uploadForm66').submit();
+			console.log("hhhhh2");
+		});
+	</script>
+
+	<script>
+
+		$(document).ready(function () {
+			// Show the initial active tab content
+			// $('.tab2-pane').hide();
+			$('.tab2-content').hide();
+			$('.tab2-pane actives').show();
+
+			$('.timeline-info a').removeClass('active');
+		
+			$('.timeline-info a').click(function (e) {
+
+				var target = $(this).attr('data-target');
+				if ($(this).attr('data-target') !== "timeline" && $(this).attr('data-target') !== "Chat") {
+
+					e.preventDefault();
+				}
+
+				$('.tab2-pane').hide(); // Hide all tab panes
+				$('.tab2-content').hide();
+				$('.tab3-content').hide();
+				$('#' + target).show(); // Show the selected tab pane
+				$('.timeline-info a').removeClass('active');
+				$(this).addClass('active');
+			})
+			$('.naves a').click(function (e) {
+
+				var target = $(this).attr('href');
+				$('.tab2-content').hide();
+				$('.tab2-pane').hide(); // Hide all tab contents
+				$(target).show();
+				$('.timeline-info a').removeClass('active');
+
+
+			});;
+
+		});
+
+
+
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<script>
+		$(document).ready(function () {
+			$('#updateButton').click(function () {
+				$.ajax({
+					url: '@Url.Action("Interests", "UserProfile")',
+					type: 'POST',
+					data: $('#myForm').serialize(),
+					success: function (response) {
+						if (response.success) {
+							// Update successful, redirect or perform other actions
+							// window.location.href = '/UserProfile/Index';
+							$('#validationMessage').hide();
+							Swal.fire({
+								icon: 'success',
+								title: 'Success!',
+								text: 'Your update was successful.',
+								showConfirmButton: false,
+								timer: 1500
+							});
+
+						} else {
+							// Display validation errors
+							console.log("oops")
+							$('#validationMessage').show();
+							$('#validationMessage').text(response.message);
+						}
+					},
+					error: function (xhr, status, error) {
+						// Handle errors
+					}
+				});
+			});
+		});
+	</script>
+
+}

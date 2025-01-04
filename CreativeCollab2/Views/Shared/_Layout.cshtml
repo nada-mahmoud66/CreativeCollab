@@ -1,0 +1,488 @@
+﻿@{
+	var profileImage = ViewBag.ProfileImage;
+	var CoverImage = ViewBag.CoverImage;
+	var FirstName = ViewBag.FirstName;
+	var LastName = ViewBag.LastName;
+	var NumOfFollowers = ViewBag.NumOfFollowers;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <title>Creative collab</title>
+    <link rel="icon" href="~/images/network.png" type="image/png" sizes="30x30">
+
+    <link rel="stylesheet" href="~/css/main.min.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/color.css">
+    <link rel="stylesheet" href="~/css/responsive.css">
+
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+		  integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+		  crossorigin="anonymous" referrerpolicy="no-referrer" />
+     <style>
+		/* Add this CSS to fill the heart icon */
+		.like i.fa.fa-heart.filled {
+			color: red; 
+			/* Change the color to the desired filled color */
+		}
+
+		.peoples {
+			list-style-type: none;
+			padding: 0;
+		}
+
+			.peoples li {
+				display: flex;
+				align-items: center;
+				padding: 10px;
+				border-bottom: 1px solid #ccc;
+			}
+
+				.peoples li figure {
+					margin-right: 10px;
+				}
+
+				.peoples li img {
+					width: 50px;
+					height: 50px;
+					border-radius: 50%;
+				}
+
+		.people-info {
+			display: flex;
+			flex-grow: 1;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.people-name {
+			flex-grow: 1;
+		}
+
+		.unread-container {
+			display: flex;
+			justify-content: space-evenly;
+		}
+
+		.unread-numbers {
+			width: 20px;
+			line-height: 20px;
+			border-radius: 50%;
+			text-align: center;
+			background-color: rgb(7, 122, 7);
+			color: white;
+			display: inherit;
+		}
+
+		h1-unread {
+			color: green;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	@* navigation bar *@
+<div class="theme-layout">
+	<div class="topbar stick">
+		<div class="logo">
+			<a title="" href="index-2.html"><img src="~/images/logo.png" alt=""></a>
+		</div>
+
+		<div class="top-area">
+				<div class="top-search">
+					<form id="searchForm" method="post" class="" asp-action="Index" asp-controller="Search" enctype="multipart/form-data">
+						<input type="text" placeholder="Search...">
+						<div id="fileInputContainer" style="cursor: pointer;" onclick="triggerFileInput()">
+							<img src="~/images/camera.svg" alt="">
+						</div>
+
+						<input type="file" id="fileInput" accept="image/*" name="Image" style="display:none">
+
+						<p id="selectedImageMessage" class="selected-image-message"></p>
+					</form>
+
+				</div>
+			<ul>
+				<li><a asp-controller="TimeLine" asp-action="Index" title="Home"><i class="ti-home"></i></a></li>
+			</ul>
+			<ul class="setting-area">
+
+				<li>
+					<a href="#" title="Notification" data-ripple="">
+						<i class="ti-bell"></i><span>20</span>
+					</a>
+					<div class="dropdowns">
+						<span>4 New Notifications</span>
+						<ul class="drops-menu">
+							<li>
+								<a href="notifications.html" title="">
+									<img src="~/images/resources/thumb-1.jpg" alt="">
+									<div class="mesg-meta">
+										<h6>sarah Loren</h6>
+										<span>Hi, how r u dear ...?</span>
+										<i>2 min ago</i>
+									</div>
+								</a>
+								<span class="tag green">New</span>
+							</li>
+							<li>
+								<a href="notifications.html" title="">
+									<img src="~/images/resources/thumb-2.jpg" alt="">
+									<div class="mesg-meta">
+										<h6>Jhon doe</h6>
+										<span>Hi, how r u dear ...?</span>
+										<i>2 min ago</i>
+									</div>
+								</a>
+								<span class="tag red">Reply</span>
+							</li>
+							<li>
+								<a href="notifications.html" title="">
+									<img src="~/images/resources/thumb-3.jpg" alt="">
+									<div class="mesg-meta">
+										<h6>Andrew</h6>
+										<span>Hi, how r u dear ...?</span>
+										<i>2 min ago</i>
+									</div>
+								</a>
+								<span class="tag blue">Unseen</span>
+							</li>
+							<li>
+								<a href="notifications.html" title="">
+									<img src="~/images/resources/thumb-4.jpg" alt="">
+									<div class="mesg-meta">
+										<h6>Tom cruse</h6>
+										<span>Hi, how r u dear ...?</span>
+										<i>2 min ago</i>
+									</div>
+								</a>
+								<span class="tag">New</span>
+							</li>
+							<li>
+								<a href="notifications.html" title="">
+									<img src="~/images/resources/thumb-5.jpg" alt="">
+									<div class="mesg-meta">
+										<h6>Amy</h6>
+										<span>Hi, how r u dear ...?</span>
+										<i>2 min ago</i>
+									</div>
+								</a>
+								<span class="tag">New</span>
+							</li>
+						</ul>
+						<a href="notifications.html" title="" class="more-mesg">view more</a>
+					</div>
+				</li>
+				<li>
+					<a href="#" title="Messages" data-ripple=""><i class="ti-comment"></i><span>12</span></a>
+					<div class="dropdowns">
+						<span>5 New Messages</span>
+						<ul class="drops-menu">
+							<li>
+								<a href="notifications.html" title="">
+									<img src="~/images/resources/thumb-1.jpg" alt="">
+									<div class="mesg-meta">
+										<h6>sarah Loren</h6>
+										<span>Hi, how r u dear ...?</span>
+										<i>2 min ago</i>
+									</div>
+								</a>
+								<span class="tag green">New</span>
+							</li>
+							<li>
+								<a href="notifications.html" title="">
+									<img src="~/images/resources/thumb-2.jpg" alt="">
+									<div class="mesg-meta">
+										<h6>Jhon doe</h6>
+										<span>Hi, how r u dear ...?</span>
+										<i>2 min ago</i>
+									</div>
+								</a>
+								<span class="tag red">Reply</span>
+							</li>
+							<li>
+								<a href="notifications.html" title="">
+									<img src="~/images/resources/thumb-3.jpg" alt="">
+									<div class="mesg-meta">
+										<h6>Andrew</h6>
+										<span>Hi, how r u dear ...?</span>
+										<i>2 min ago</i>
+									</div>
+								</a>
+								<span class="tag blue">Unseen</span>
+							</li>
+							<li>
+								<a href="notifications.html" title="">
+									<img src="~/images/resources/thumb-4.jpg" alt="">
+									<div class="mesg-meta">
+										<h6>Tom cruse</h6>
+										<span>Hi, how r u dear ...?</span>
+										<i>2 min ago</i>
+									</div>
+								</a>
+								<span class="tag">New</span>
+							</li>
+							<li>
+								<a href="notifications.html" title="">
+									<img src="~/images/resources/thumb-5.jpg" alt="">
+									<div class="mesg-meta">
+										<h6>Amy</h6>
+										<span>Hi, how r u dear ...?</span>
+										<i>2 min ago</i>
+									</div>
+								</a>
+								<span class="tag">New</span>
+							</li>
+						</ul>
+						<a href="messages.html" title="" class="more-mesg">view more</a>
+					</div>
+				</li>
+				<li>
+					<a href="#" title="Languages" data-ripple=""><i class="-globe"></i></a>
+					<div class="dropdowns languages">
+						<a href="#" title=""><i class="ti-check"></i>English</a>
+						<a href="#" title="">Arabic</a>
+						<a href="#" title="">Dutch</a>
+						<a href="#" title="">French</a>
+					</div>
+				</li>
+			</ul>
+			<div class="user-img">
+					<img src="~/images/user/@profileImage" style="width: 45px; height: 45px;" alt="">
+
+				<span class="status f-online"></span>
+				<div class="user-setting">
+					<a href="#" title=""><span class="status f-online"></span>online</a>
+					<a href="#" title=""><span class="status f-away"></span>away</a>
+					<a href="#" title=""><span class="status f-off"></span>offline</a>
+					<a href="#" title=""><i class="ti-user"></i> view profile</a>
+					<a href="#" title=""><i class="ti-pencil-alt"></i>edit profile</a>
+					<a href="#" title=""><i class="ti-target"></i>activity log</a>
+					<a href="#" title=""><i class="ti-settings"></i>account setting</a>
+					<a href="#" title=""><i class="ti-power-off"></i>log out</a>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	</div>
+	<div class="theme-layout">
+		<section>
+			<div class="feature-photo">
+				@* cover *@
+				<figure><img src="~/images/user/@CoverImage" style="width: 1366px; height: 400px" alt=""></figure>
+				<div class="add-btn">
+					<span id="followerCountMain">@NumOfFollowers Followers</span>
+
+					@* <a href="#" title="" data-ripple="">Add Friend</a> *@
+
+				</div>
+				<form method="post" id="uploadForm66" asp-controller="UserProfile" asp-action="EditCoverImage" class="edit-phto" enctype="multipart/form-data">
+					<i class="-camera-retro"></i>
+					<label class="fileContainer">
+						Edit Cover Photo
+						<input id="fileInput66" name="ProfileImage" type="file" />
+					</label>
+				</form>
+				<div class="container-fluid">
+					<div class="row merged">
+						<div class="col-lg-2 col-sm-3">
+							<div class="user-avatar">
+								<figure>
+									<img src="~/images/user/@profileImage" style="width: 200px; height: 185px;" alt="">
+									<form method="post" id="uploadForm55" asp-controller="UserProfile" asp-action="EditProfileImage" class="edit-phto" enctype="multipart/form-data">
+										<i class="-camera-retro"></i>
+										<label class="fileContainer">
+											Edit Display Photo
+											<input id="fileInput55" name="ProfileImage" type="file" />
+										</label>
+									</form>
+								</figure>
+							</div>
+						</div>
+						<div class="col-lg-10 col-sm-9">
+							<div class="timeline-info">
+								<ul>
+									<li class="admin-name">
+										<h5 id="fullName">@FirstName @LastName</h5>
+									</li>
+									<li>
+										<a class="active" asp-controller="UserProfile" asp-action="Index" data-target="timeline">My posts</a>
+										@* <a class="" href="#photos" data-target="photos">Photos</a> *@
+										<a class="" href="#friends" data-target="friends">Follow</a>
+										<a class="" href="#groups" data-target="groups">Groups</a>
+										<a class="" asp-controller="Chat" asp-action="Index" data-target="Chat">Chats</a>
+										@* <a class="" href="#about" data-target="about">About</a> *@
+									</li>
+								</ul>
+							</div>
+							<div id="tabContent" style="display: none;"></div>
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</section> <!-- profile  -->
+		
+	<main role="main" class="pb-3">
+            @RenderBody()
+    </main>
+
+	 <!-- footer -->
+        <footer> </footer>
+
+        <div class="bottombar">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="copyright"><a target="_blank" href="https://www.templateshub.net">
+                                copyright</a></span>
+                        <div class="logo" style="margin-left:350px; margin-top: -100px; width: 300px;height: 100px;">
+                            <a href="index-2.html" title=""><img src="~/images/logo.png" alt=""></a>
+                        </div>
+                        <i><img src="images/credit-cards.png" alt=""></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- footer -->
+		<!-- FarahModal -->
+		<div id="FarahModal" class="FarahModal" style="display:none;">
+			<div class="FarahModal-content">
+				<span class="FarahClose" onclick="closeModal()">&times;</span>
+				<img id="scannedImage" src="" alt="Scanned Image">
+				<p>Scanning image...</p>
+			</div>
+		</div>
+ @* for user timeline*@
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="~/js/main.min.js"></script>
+    <script src="~/js/script.js"></script>
+	<script src="~/js/map-init.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8c55_YHLvDHGACkQscgbGLtLRdxBDCfI"></script>
+		<script>
+			$(document).ready(function () {
+				//remove of followers
+				$('.remove-btn').on('click', function (event) {
+					event.preventDefault();
+					var followerId = $(this).data('followerid');
+					var followerCount = parseInt($('#followerCount').text());
+					$(this).closest('.unique-li-class').remove();
+					var currentCount = parseInt($('#followerCountMain').text().split(' ')[0]);
+					$('#followerCountMain').text((currentCount - 1) + ' Followers')
+
+					$('#followerCount').text(followerCount - 1);
+					$.ajax({
+						url: '@Url.Action("RemoveFollower", "UserProfile")',
+						type: 'POST',
+						data: { FollowerId: followerId },
+						success: function (response) {
+							if (response.success) {
+								console.log("ok");
+							} else {
+								console.log("not ok");
+
+							}
+						},
+						error: function (xhr, status, error) {
+						
+						}
+					});
+					
+				});
+				//unfollow of following
+				$('.unfollow-btn').on('click', function (event) {
+					// Prevent the default behavior of the anchor tag
+					event.preventDefault();
+					var followingId = $(this).data('followingid');
+					var followingCount = parseInt($('#followingCount').text());
+					$(this).closest('.unique-li-class').remove();
+					$('#friend-' + followingId).remove();
+
+					$('#followingCount').text(followingCount - 1);
+					$.ajax({
+						url: '@Url.Action("RemoveFollowing", "UserProfile")',
+						type: 'POST',
+						data: { FollowingId: followingId },
+						success: function (response) {
+							if (response.success) {
+								console.log("ok");
+							} else {
+								console.log("ok");
+							}
+						},
+						error: function (xhr, status, error) {
+
+						}
+					});
+				});
+
+				// switch
+				$('.follow-btn').on('click', function (event) {
+					// Prevent the default behavior of the anchor tag
+					event.preventDefault();
+
+					// Find the <span> element inside the parent <div> and toggle its text
+					var spanElement = $(this).closest('.pepl-info').find('.follow-status');
+					spanElement.text(spanElement.text() == 'Following' ? 'Follow' : 'Following');
+				});
+			});
+		</script>
+		<script>
+			// Get the FarahModal element
+			var FarahModal = document.getElementById('FarahModal');
+
+			// Get the image element inside the modal
+			var scannedImage = document.getElementById('scannedImage');
+
+			// Get the file input element
+			var fileInput = document.getElementById('fileInput');
+
+			// When the file input changes (image is uploaded)
+			fileInput.addEventListener('change', function () {
+				var file = this.files[0];
+
+				console.log("Image path:", file);
+				if (file) {
+					// Show the modal
+					FarahModal.style.display = 'block';
+
+					// Set the image source to the uploaded image
+					scannedImage.src = URL.createObjectURL(file);
+
+					// Wait for the image to load
+					scannedImage.onload = function () {
+						// Simulate a delay before hiding the modal (scanning effect)
+						setTimeout(function () {
+							// Hide the modal
+							FarahModal.style.display = 'none';
+
+							// Submit the form
+							document.getElementById('searchForm').submit();
+						}, 2000); // 2 seconds delay (adjust as needed)
+					};
+				}
+			});
+
+			// Close the modal
+			function closeModal() {
+				FarahModal.style.display = 'none';
+			}
+
+			function triggerFileInput() {
+				// Trigger the file input click
+				document.getElementById('fileInput').click();
+			}
+		</script>
+
+		@RenderSection("scripts", false)
+</body>
+
+</html>

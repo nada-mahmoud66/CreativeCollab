@@ -1,0 +1,392 @@
+﻿@model VmGroupMembersForMember
+@{
+	Layout = null;
+	Layout = "TimeLineLayout";
+}
+
+<!DOCTYPE html>
+
+	<section>
+			<div class="feature-photo">
+				<figure><img src="~/images/groups/@Model.group.CoverImage" style="height:300px;" alt=""></figure>
+				<div class="add-btn">
+					<span>@Model.NoOfMembers followers</span>
+					@if (Model.isMember)
+					{
+						<a href="" title=""
+						   class="group"
+						   data-ripple=""><span class="follow-status">Following</span></a>
+					}
+					else
+					{
+						<a href="" title=""
+						   class="group"
+						   data-ripple=""><span class="follow-status">Follow</span></a>
+					}
+				</div>
+				<div class="container-fluid">
+					<div class="row merged">
+						<div class="col-lg-10 col-sm-9">
+							<div class="timeline-info">
+								<ul>
+									<li class="admin-name">
+										<h5>@Model.group.GroupName</h5>
+										<span>@Model.group.Description</span>
+									</li>
+									<li>
+										<a href="/Group/GroupMember?groupId=@Model.group.GroupId" title="" data-ripple="">Page</a>
+										<a class="active" href="" title="" data-ripple="">Members</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+	<section>
+			<div class="gap gray-bg">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="row" id="page-contents">
+								<div class="col-lg-3">
+									<aside class="sidebar static">
+								@Html.Partial("pvShortcutsSideBar" , Model.CurrentUser)
+										<!-- Shortcuts -->
+									</aside>
+								</div><!-- sidebar -->
+								<!-- ola -->
+								<div class="col-lg-6">
+									<div class="central-meta">
+										<div class="frnds">
+											<ul class="nav nav-tabs">
+												<li class="nav-item">
+													<a class="" href="#frends-req"
+											   data-toggle="tab">Follwers</a><span>@Model.NoOfMembers</span>
+												</li>
+											</ul>
+
+											<!-- Tab panes -->
+											<div class="tab-content">
+
+												<div class="tab-pane show active fade" id="frends-req">
+
+													<div class="searchjoined" style="margin-top: 15px;"></div>
+													<div class="GroupFollowers">
+														<div class="container">
+															<h5>Admin:</h5>
+															<ul class="nearby-contct" style="margin-top:5px;">
+																<li>
+																	<div class="nearly-pepls">
+																		<figure>
+																	<a asp-controller="Profile" asp-action="Index" asp-route-Id="@Model.group.CreatorUser.Id" title="">
+																				<img src="~/images/user/@Model.group.CreatorUser.ProfileImage" style="height:50px;width:50px"
+																					 alt="">
+																			</a>
+																		</figure>
+																		<div class="pepl-info">
+																			<h4>
+																		<a asp-controller="Profile" asp-action="Index" asp-route-Id="@Model.group.CreatorUser.Id" title="">
+																					@Model.group.CreatorUser.FirstName
+																					@Model.group.CreatorUser.LastName
+																				</a>
+																			</h4>
+																		
+																			@if (Model.isFollowingAdmin)
+																			{
+																				<a href="" title=""
+																				   class="add-butn admin"
+																				   data-ripple=""><span class="follow-status">Following</span></a>
+																			}
+																			else
+																			{
+																				<a href="" title=""
+																					class="add-butn admin"
+																					data-ripple=""><span class="follow-status">Follow</span></a>
+																			}
+																		</div>
+																	</div>
+																</li>
+															</ul>
+														</div>
+
+													</div>
+
+													<div class="GroupFollowers">
+														<div class="container">
+															<h5>Friends:</h5>
+															<!-- ola -->
+															<ul class="nearby-contct friend_ul" style="margin-top:5px;">
+																@foreach(var friend in Model.MutualFriends)
+																{
+																	<!-- ola -->
+																	<li class="unique-li-class" >
+																		<div class="nearly-pepls">
+																			<figure>
+																		<a asp-controller="Profile" asp-action="Index" asp-route-Id="@friend.Id" title="">
+																					<img src="~/images/user/@friend.ProfileImage" style="height:50px;width:50px"
+																						 alt="">
+																				</a>
+																			</figure>
+																			<div class="pepl-info">
+																				<h4>
+																					<a asp-controller="Profile" asp-action="Index" asp-route-Id="@friend.Id" title="">
+																						@friend.FirstName
+																						@friend.LastName
+																					</a>
+																				</h4>
+																				<!-- ola -->
+																				<a href="" title="" class="add-butn follow-btn" data-friendid="@friend.Id"
+																				   data-ripple=""><span class="follow-status">Following</span></a>
+																			</div>
+																		</div>
+																	</li>
+																}
+															</ul>
+														</div>
+
+													</div>
+													<div class="GroupFollowers">
+														<div class="container">
+															<h5>Follwers:</h5>
+															<ul class="nearby-contct follwers_ul" style="margin-top:5px;">
+																@foreach(var follower in Model.RestOfGroupFollowers)
+																{
+																	if (follower.Id == Model.CurrentUser.Id) continue;
+																	<li class="unique-li-class">
+																		<div class="nearly-pepls">
+																			<figure>
+																		<a asp-controller="Profile" asp-action="Index" asp-route-Id="@follower.Id" title="">
+																					<img src="~/images/user/@follower.ProfileImage" style="height:50px;width:50px"
+																						 alt="">
+																				</a>
+																			</figure>
+																			<div class="pepl-info">
+																				<h4>
+																			<a asp-controller="Profile" asp-action="Index" asp-route-Id="@follower.Id" title="">
+																						@follower.FirstName 
+																						@follower.LastName</a>
+																				</h4>
+																				<a href="" title="" class="add-butn follow-btn" data-friendid="@follower.Id"
+																				   data-ripple=""><span class="follow-status">Follow</span></a>
+																			</div>
+																		</div>
+																	</li>
+																}
+															</ul>
+														</div>
+
+													</div>
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</div><!-- centerl meta -->
+								<!-- ola -->
+								<div class="col-lg-3">
+									<aside class="sidebar static">
+										<div class="widget">
+											<h4 class="widget-title">Invite friends</h4>
+											<ul class="invition">
+												@foreach (var friend in Model.FriendsToInvite)
+												{
+													if (friend.Id == Model.group.CreatorUserId) continue;
+													<li class="friendToInvite">
+														<figure>
+															<img src="~/images/user/@friend.ProfileImage" style="height:50px;width:50px" alt="">
+														</figure>
+														<div class="friend-meta">
+															<h4>
+																<a asp-controller="Profile" asp-action="Index" asp-route-Id="@friend.Id" class="underline" title="">
+																	@friend.FirstName
+																	@friend.LastName
+																</a>
+															</h4>
+															<a href="" title="" class="invite" data-friendid="@friend.Id" data-ripple="">invite</a>
+														</div>
+													</li>
+												}
+											</ul>
+										</div>
+									</aside>
+							@Html.Partial("pvSideBarFollowingList", new ApplicationUser { Followings = ViewBag.Followings })
+								</div><!-- sidebar -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+@section scripts {
+	@* Invite *@
+	<script>
+		$(document).on('click', '.invite', function (event) {
+			// Prevent the default behavior of the anchor tag
+			event.preventDefault();
+			var friendId = $(this).data('friendid');
+			var aElement = $(this).closest('.friendToInvite').find('.invite');
+			aElement.text('Invited!');
+			aElement.off('click'); // Remove all click event handlers
+			aElement.css({
+				'pointer-events': 'none', // Disable pointer events
+				'opacity': '0.7' // Reduce opacity to visually indicate it's disabled
+				// Add any other inline styles you want to apply
+			});
+			// Find the <span> element inside the parent <div> and toggle its text
+
+			$.ajax({
+				url: '/Group/InviteFriend',
+				type: 'POST',
+				data: {
+					userId: '@Model.CurrentUser.Id',
+					friendId: friendId,
+					groupId: '@Model.group.GroupId'
+				},
+				success: function (response) {
+					console.log("sucess invite")
+				},
+				error: function (xhr, status, error) {
+					console.log("failed")
+				}
+			});
+		});
+	</script>
+	@*Follow or unfollow group*@
+	<script>
+		$(document).ready(function () {
+			$(document).on('click', '.group', function (event) {
+				// Prevent the default behavior of the anchor tag
+				event.preventDefault();
+				var spanElement = $(this).closest('.add-btn').find('.follow-status');
+				// Find the <span> element inside the parent <div> and toggle its text
+				spanElement.text(spanElement.text() == 'Following' ? 'Follow' : 'Following');
+
+				if (spanElement.text() == 'Follow') {
+
+					$.ajax({
+						url: '/Group/UnfollowGroup',
+						type: 'POST',
+						data: {
+							userId: '@Model.CurrentUser.Id',
+							groupId: '@Model.group.GroupId'
+						},
+						success: function (response) {
+							console.log("sucess unfollow")
+						},
+						error: function (xhr, status, error) {
+							console.log("failed")
+						}
+					});
+				} else {
+
+					$.ajax({
+						url: '/Group/FollowGroup',
+						type: 'POST',
+						data: {
+							userId: '@Model.CurrentUser.Id',
+							groupId: '@Model.group.GroupId'
+						},
+						success: function (response) {
+							console.log("sucess follow")
+						},
+						error: function (xhr, status, error) {
+						}
+					});
+				}
+			});
+		});
+
+	</script>
+	@*Follow or unfollow members*@
+	<script>
+		$(document).ready(function () {
+		  $(document).on('click', '.follow-btn', function (event) {
+			// Prevent the default behavior of the anchor tag
+			event.preventDefault();
+			var friendId = $(this).data('friendid');
+			var spanElement = $(this).closest('.pepl-info').find('.follow-status');
+			var removedLi = $(this).closest('.unique-li-class').detach();
+			// Find the <span> element inside the parent <div> and toggle its text
+				console.log(friendId);
+			spanElement.text(spanElement.text() == 'Following' ? 'Follow' : 'Following');
+
+				if (spanElement.text() == 'Follow') {
+					$('.follwers_ul').append(removedLi);
+					$.ajax({
+						url: '/UserProfile/RemoveFollowing',
+						type: 'POST',
+						data: {
+							FollowingId: friendId
+						},
+						success: function (response) {
+							console.log("sucess unfollow")
+						},
+						error: function (xhr, status, error) {
+							console.log("failed")
+						}
+					});
+				} else {
+					$('.friend_ul').append(removedLi);
+					$.ajax({
+						url: '/Profile/addFollow',
+						type: 'POST',
+						data: {
+							FollowingId: friendId
+						},
+						success: function (response) {
+							console.log("sucess follow")
+						},
+						error: function (xhr, status, error) {
+						}
+					});
+				}
+			});
+			});
+	
+	</script>
+	@*Follow or unfollow admin*@
+	<script>
+		$(document).ready(function () {
+			$(document).on('click', '.admin', function (event) {
+				// Prevent the default behavior of the anchor tag
+				event.preventDefault();
+				var spanElement = $(this).closest('.pepl-info').find('.follow-status');
+				// Find the <span> element inside the parent <div> and toggle its text
+				spanElement.text(spanElement.text() == 'Following' ? 'Follow' : 'Following');
+
+				if (spanElement.text() == 'Follow') {
+					$.ajax({
+						url: '/UserProfile/RemoveFollowing',
+						type: 'POST',
+						data: {
+							FollowingId: '@Model.group.CreatorUserId'
+						},
+						success: function (response) {
+							console.log("sucess unfollow")
+						},
+						error: function (xhr, status, error) {
+							console.log("failed")
+						}
+					});
+				} else {
+					$.ajax({
+						url: '/Profile/addFollow',
+						type: 'POST',
+						data: {
+							FollowingId: '@Model.group.CreatorUserId'
+						},
+						success: function (response) {
+							console.log("sucess follow")
+						},
+						error: function (xhr, status, error) {
+						}
+					});
+				}
+			});
+		});
+
+	</script>
+	}

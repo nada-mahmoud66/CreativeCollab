@@ -1,0 +1,29 @@
+﻿@model ApplicationUser;
+
+	<aside class="sidebar">
+
+		<div class="widget friend-list stick-widget">
+			<h4 class="widget-title">Following</h4>
+			<div id="searchDir"></div>
+			<ul id="people-list" class="friendz-list">
+				@foreach (var friend in Model.Followings)
+				{
+				<li id="friend-@friend.Id">
+						<figure>
+						<a asp-controller="Profile" asp-action="Index" asp-route-id="@friend.Id">
+							<img src="~/images/user/@friend.ProfileImage" style="width: 60px; height: 40px;" alt="">
+						</a>
+
+						@* 	<span class="status f-online"></span> *@
+						</figure>
+						<div class="friendz-meta">
+						<a asp-controller="Profile" asp-action="Index" asp-route-Id="@friend.Id">@friend.FirstName @friend.LastName</a>
+						@* <i><a href="https://wpkixx.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4136282f352433322e2d25243301262c20282d6f222e2c">[email&#160;protected]</a></i> *@
+						</div>
+					</li>
+
+				}
+			</ul>
+		</div><!-- friends list sidebar -->
+	</aside>
+

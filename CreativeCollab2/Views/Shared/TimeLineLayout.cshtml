@@ -1,0 +1,1245 @@
+﻿@using CreativeCollab2.Controllers
+@{
+
+	var profileImage = ViewBag.ProfileImage;
+	var CoverImage = ViewBag.CoverImage;
+	var FirstName = ViewBag.FirstName;
+	var LastName = ViewBag.LastName;
+	var NumOfFollowers = ViewBag.NumOfFollowers;
+	var Notifications = ViewBag.Notifications;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<title>Creative collab</title>
+	<link rel="icon" href="~/images/network.png" type="image/png" sizes="30x30">
+
+	<link rel="stylesheet" href="~/css/main.min.css">
+	<link rel="stylesheet" href="~/css/style.css">
+	<link rel="stylesheet" href="~/css/color.css">
+	<link rel="stylesheet" href="~/css/responsive.css">
+
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+		  integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+		  crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		 #textModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+        }
+
+        /* Modal content */
+        #textModalContent {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 485px;
+			font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation-name: animateModal;
+            animation-duration: 0.4s;
+        }
+
+        /* Animation for modal */
+        @@keyframes animateModal {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        /* Modal buttons */
+        #textModalButtons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        #textModalButtons button {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #editButton {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+
+        #cancelButton {
+            background-color: #f44336; /* Red */
+            color: white;
+        }
+
+        /* Close button */
+        #closeModal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        #closeModal:hover,
+        #closeModal:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+		.message-card {
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			padding: 10px;
+			cursor: pointer;
+			max-width: 300px; /* Adjust as needed */
+			margin: 10px;
+		}
+
+			.message-card img {
+				width: 100%;
+				border-radius: 5px;
+			}
+
+		.message-text {
+			margin-top: 10px;
+			text-align: center;
+			font-weight: bold;
+		}
+
+		.chatt-box {
+			background: #fbfbfb none repeat scroll 0 0;
+			display: none; /* Hide the chat box by default */
+			position: fixed; /* Position the chat box relative to the browser window */
+			bottom: 0; /* Position the chat box at the bottom of the window */
+			right: 20px; /* Position the chat box with a 20px right margin */
+			width: 300px; /* Set the width of the chat box */
+			max-height: 400px; /* Set the maximum height of the chat box */
+			overflow-y: hidden; /* Hide vertical scrollbar and prevent scrolling */
+			border: 1px solid #ccc; /* Add a border for styling */
+			z-index: 9999; /* Set a high z-index to ensure the chat box is displayed above other elements */
+		}
+
+
+			.chatt-box.open {
+				display: block; /* Display the chat box when it has the 'open' class */
+			}
+
+
+		/* Add this CSS to fill the heart icon */
+		.like i.fa.fa-heart.filled {
+			color: red;
+			/* Change the color to the desired filled color */
+		}
+
+		.peoples {
+			list-style-type: none;
+			padding: 0;
+		}
+
+			.peoples li {
+				display: flex;
+				align-items: center;
+				padding: 10px;
+				border-bottom: 1px solid #ccc;
+			}
+
+				.peoples li figure {
+					margin-right: 10px;
+				}
+
+				.peoples li img {
+					width: 50px;
+					height: 50px;
+					border-radius: 50%;
+				}
+
+		.people-info {
+			display: flex;
+			flex-grow: 1;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.people-name {
+			flex-grow: 1;
+		}
+
+		.unread-container {
+			display: flex;
+			justify-content: space-evenly;
+		}
+
+		.unread-numbers {
+			width: 20px;
+			line-height: 20px;
+			border-radius: 50%;
+			text-align: center;
+			background-color: rgb(7, 122, 7);
+			color: white;
+			display: inherit;
+		}
+
+		h1-unread {
+			color: green;
+			text-align: center;
+		}
+        #numberOfNotifications {
+            display: block !important;
+        }
+
+		#searchResults {
+			background-color: rgba(255, 255, 255, 0.8);
+			position:absolute;
+			width:47%
+		
+		}
+	</style>
+</head>
+<body>
+	@* textModal *@
+	<div id="textModal">
+     <div id="textModalContent">
+        <span id="closeModal">&times;</span>
+			<p>Your post contains language that violates our community guidelines. Please rephrase and try again.</p>
+        <div id="textModalButtons">
+            <button id="editButton">Edit</button>
+            <button id="cancelButton">Cancel</button>
+        </div>
+     </div>
+    </div>
+	@* navigation bar *@
+	<div class="theme-layout">
+		<div class="topbar stick">
+			<div class="logo" style="">
+				<a title="" href="index-2.html"><img src="~/images/logo.png" alt=""></a>
+			</div>
+
+			<div class="top-area">
+				<div class="top-search">
+					<form id="searchForm" method="post" class="" asp-action="Index" asp-controller="Search" enctype="multipart/form-data">
+						<input type="text" name="searchText" id="searchInput" placeholder="Search...">
+						<div id="fileInputContainer" style="cursor: pointer;" onclick="triggerFileInput()">
+							<img src="~/images/camera.svg" alt="">
+						</div>
+						<input type="file" id="fileInput" accept="image/*" name="Image" style="display:none">
+						<p id="selectedImageMessage" class="selected-image-message"></p>
+					</form>
+					<div id="searchResults" class="search-results"></div>
+				</div>
+
+				<ul>
+					<li><a asp-controller="TimeLine" asp-action="Index" title="Home"><i class="ti-home"></i></a></li>
+				</ul>
+				<ul class="setting-area">
+
+                    <li>
+                        <a id="notfBtn" href="#" title="Notification" data-ripple="">
+                            <i class="ti-bell"></i><span id="numberOfNotifications"></span>
+                        </a>
+                        <div class="dropdowns">
+                            <ul id="notificationsList" class="drops-menu">
+                                @{
+                                    var unreadCount = 0;
+                                }
+                                @foreach (var notification in Notifications)
+                                {
+                                    var bg = "white";
+                                    @if (!notification.IsRead)
+                                    {
+                                        bg = "#f5f5f5";
+                                        unreadCount++;
+									}
+
+									TimeSpan? difference = DateTime.Now - notification.NotificationDateTime;
+									int durationInMinutes = (int)Math.Floor(difference?.TotalMinutes ?? 0);
+
+									int years = durationInMinutes / (60 * 24 * 365);
+									int months = durationInMinutes / (60 * 24 * 30) % 12;
+									int days = durationInMinutes / (60 * 24) % 30;
+									int hours = durationInMinutes / 60 % 24;
+									int minutes = durationInMinutes % 60;
+									string duration = "";
+									List<string> parts = new List<string>();
+									if (years > 0)
+									{
+										parts.Add($"{years} year{(years != 1 ? "s" : "")}");
+										duration = string.Join(", ", parts);
+
+									}
+									else if (months > 0)
+									{
+										parts.Add($"{months} month{(months != 1 ? "s" : "")}");
+										duration = string.Join(", ", parts);
+
+									}
+									else if (days > 0)
+									{
+										parts.Add($"{days} day{(days != 1 ? "s" : "")}");
+										duration = string.Join(", ", parts);
+
+									}
+									else if (hours > 0)
+									{
+										parts.Add($"{hours} hour{(hours != 1 ? "s" : "")}");
+										duration = string.Join(", ", parts);
+
+									}
+									else if (minutes > 0)
+									{
+										parts.Add($"{minutes} minute{(minutes != 1 ? "s" : "")}");
+										duration = string.Join(", ", parts);
+
+									}
+
+									else if (parts.Count == 0)
+									{
+										duration = "Less than a minute";
+									}
+
+                                    if (notification.NotificationType == "like" || notification.NotificationType == "comment")
+                                    {
+                                        <li id="@notification.NotificationId">
+                                            <a href="/UserProfile/Post?postId=@notification.PostId" title="@notification.NotificationMessage" style="background-color:@bg">
+                                                <img src="/images/user/@notification.SenderImg" alt="">
+                                                <div class="mesg-meta">
+                                                    <h6>@notification.SenderName</h6>
+                                                    <span>@notification.NotificationMessage</span>
+                                                    <i>@duration</i>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
+                                    else if (notification.NotificationType == "invitation")
+                                    {
+                                        <li id="@notification.NotificationId">
+                                            <a href="/Group/ClickedGroup?groupId=@notification.GroupId" title="@notification.NotificationMessage" style="background-color:@bg">
+                                                <img src="/images/user/@notification.SenderImg" alt="">
+                                                <div class="mesg-meta">
+													<h6>@notification.SenderName</h6>
+													<span>@notification.NotificationMessage</span>
+													<i>@duration</i>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li id="@notification.NotificationId">
+                                            <a href="/Profile/Index?id=@notification.SenderId" title="@notification.NotificationMessage" style="background-color:@bg">
+                                                <img src="/images/user/@notification.SenderImg" alt="">
+                                                <div class="mesg-meta">
+                                                    <h6>@notification.SenderName</h6>
+                                                    <span>@notification.NotificationMessage</span>
+                                                    <i>@duration</i>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                            <a href="notifications.html" title="" class="more-mesg">view more</a>
+                        </div>
+                    </li>
+					<li>
+						<a href="#" title="Messages" data-ripple="">
+							<i class="ti-comment"></i>							<span class="_numberOfchats"></span>
+						</a>
+						<div class="dropdowns">
+							<span class="numberOfchats"></span>
+							<ul id="chatsnotification" class="chatsnotification specialfaroha drops-menu"></ul>
+							<a asp-controller="Chat" asp-action="Index" title="" class="more-mesg">view more</a>
+
+						</div>
+					</li>
+			
+				</ul>
+			
+				<div class="user-img">
+						<a id="aimage" asp-controller="UserProfile" asp-action="Index"  title="">
+						<img src="~/images/user/@profileImage" style="width: 35px; height: 35px; border-radius:50px" alt="">
+                         </a>
+				</div>
+			
+
+			</div>
+		</div>
+	</div>
+
+        <!-- profile  -->
+
+        <main role="main" class="pb-3">
+            @RenderBody()
+            <div class="chatt-box" id="chattBox">
+                <div class="chat-head">
+                    @* <span class="status f-online"></span> *@
+                    <h6> </h6>
+                    <div class="more">
+
+                        <span class="close-mesage"><i class="ti-close"></i></span>
+                    </div>
+                </div>
+                <div class="chat-list">
+                    <ul id="chattingArea2">
+                    </ul>
+                    <div class="message-text-container" style="">
+                        <form method="post" id="messageForm">
+                            <textarea id="areaPop"></textarea>
+                            <button type="submit" id="sendMessagePop" title="send"><i class="fa fa-paper-plane"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- footer -->
+        <footer> </footer>
+
+        <div class="bottombar">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="copyright">
+                            <a target="_blank" href="https://www.templateshub.net">
+                                copyright
+                            </a>
+                        </span>
+                        <div class="logo" style="margin-left:350px; margin-top: -100px; width: 300px;height: 100px;">
+                            <a href="index-2.html" title=""><img src="~/images/logo.png" alt=""></a>
+                        </div>
+                        <i><img src="images/credit-cards.png" alt=""></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- footer -->
+        <!-- FarahModal -->
+        <div id="FarahModal" class="FarahModal" style="display:none;">
+            <div class="FarahModal-content">
+                <span class="FarahClose" onclick="closeModal()">&times;</span>
+                <img id="scannedImage" src="" alt="Scanned Image">
+                <p>Scanning image...</p>
+            </div>
+        </div>
+        @* for user timeline*@
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+        <script src="~/js/main.min.js"></script>
+        <script src="~/js/script.js"></script>
+        <script src="~/js/map-init.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8c55_YHLvDHGACkQscgbGLtLRdxBDCfI"></script>
+
+        <!-- Include jQuery -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+        <!-- Include SignalR -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.8/signalr.min.js"></script>
+       <!--Notifications-->
+		<script>
+	if(@unreadCount> 0)
+	document.getElementById("numberOfNotifications").innerText = @unreadCount;
+
+	document.addEventListener('click', function (event) {
+		var list = document.getElementById('notificationsList');
+		var target = event.target;
+		if (list && !list.contains(target)) {
+			$("#notificationsList a").css("background-color", "white");
+		}
+	});
+
+	$('#notificationsList').on('click','li a' ,function(){
+		var href = $(this).attr('href');
+		window.location.href=href;
+	})
+
+	var notfBtn = document.getElementById('notfBtn');
+	notfBtn.addEventListener('click', function () {
+
+			event.preventDefault();
+			$.ajax({
+				url: '/UserProfile/ReadNotifications',
+				type: 'POST',
+			    data: { },
+				success: function (response) {
+					console.log("sucess read")
+				},
+				error: function (xhr, status, error) {
+					console.log("failed")
+				}
+			});
+		document.getElementById("numberOfNotifications").innerText = ""
+
+	});
+	const connection = new signalR.HubConnectionBuilder()
+		.withUrl("/notificationHub")
+		.build();
+
+	connection.on("ReceiveNotification", (senderId, receiverId, type, message, postId, img, name, time, groupId, notificationId) => {
+		const dateTime = new Date(time);
+		if (senderId != receiverId) {
+		// Format date and time
+					const formattedTime = "Just now"
+
+		console.log(`Message received from ${senderId}: ${message} : img  : ${img}`);
+		var listItem
+		if (type == "like" || type == "comment") {
+				listItem = `<li id="${notificationId}">
+										<a href="/UserProfile/Post?postId=${postId}" title = "${message}" style="background-color:#f5f5f5">
+							<img src="/images/user/${img}" alt = "" >
+								<div class="mesg-meta" >
+									<h6>${name}</h6>
+										<span>${message}</span>
+														<i>${formattedTime}</i>
+								</div>
+						</a>
+									</li>`}
+		else if (type == "invitation") {
+				listItem = `<li id="${notificationId}" data-ripple="">
+													<a href="/Group/ClickedGroup?groupId=${groupId}" title = "${message}" style="background-color:#f5f5f5">
+										<img src="/images/user/${img}" alt = "" >
+											<div class="mesg-meta" >
+												<h6>${name}</h6>
+													<span>${message}</span>
+																	<i>${formattedTime}</i>
+											</div>
+									</a>
+												</li>`
+
+		}
+		else {
+				listItem = `<li id="${notificationId}" data-ripple="">
+														<a href="/Profile/Index?id=${senderId}" title = "${message}" style="background-color:#f5f5f5">
+													<img src="/images/user/${img}" alt = "" >
+														<div class="mesg-meta" >
+															<h6>${name}</h6>
+																<span>${message}</span>
+																				<i>${formattedTime}</i>
+														</div>
+												</a>
+															</li>`
+		}
+		$('#notificationsList').prepend(listItem);
+
+			var numberOfNotificationsElement = $("#numberOfNotifications");
+			var currentNumberOfNotifications = parseInt(numberOfNotificationsElement.text(), 10);
+			var newNumberOfNotifications
+			if (document.getElementById("numberOfNotifications").innerText == "")
+				newNumberOfNotifications = 1;
+			else
+				newNumberOfNotifications = currentNumberOfNotifications + 1;
+			document.getElementById("numberOfNotifications").innerText = newNumberOfNotifications
+	}
+	});
+
+	connection.on("UnReceiveNotification", (notificatioId, isRead, receiverId) => {
+			// Format date and time
+
+		console.log(`Message received from ${notificatioId}: ${isRead} : img  : ${receiverId}`);
+		document.getElementById(notificatioId).remove();
+		if (!isRead) {
+			var numberOfNotificationsElement = $("#numberOfNotifications");
+			var currentNumberOfNotifications = parseInt(numberOfNotificationsElement.text(), 10);
+			var newNumberOfNotifications = currentNumberOfNotifications - 1;
+			if (newNumberOfNotifications == 0)
+				document.getElementById("numberOfNotifications").innerText = ""
+			else
+				document.getElementById("numberOfNotifications").innerText = newNumberOfNotifications
+		}
+
+	});
+
+	connection.start().then(() => {
+		console.log('Connection started ola');
+	}).catch((err) => {
+		console.error(err.toString());
+	});
+
+        </script>
+        
+		<script>
+			$(document).ready(function () {
+				$('#chatsnotification').on('click', 'li a', function () {
+					var href = $(this).attr('href');
+
+					window.location.href = href;
+
+				});
+				var userId = '@ViewBag.meID';
+				sessionStorage.setItem('userId', userId);
+				const userIdValue = sessionStorage.getItem('userId');
+				console.log("userIdValue:", userIdValue);
+				var recieverPhoto = "";
+				var receiverId = 0; //for main chat
+				var receiverPopId = 0  // for pop chat
+				var firstname = "";
+				var lastname = "";
+				var imagePop = "";
+				var postIdShare = 0;
+				var selectedIds = [];
+				$(document).on('click', '#sharebutton', function (event) {
+					console.log("haha");
+					var postId = $(this).find('i').data('post-id-share'); // Extract post ID from the clicked button
+					$('#exampleModalCenter').find('.modal-footer button').attr('data-post-id-share', postId);
+					postIdShare = postId;
+				});
+
+				$('#sendshare').on('click', function (event) {
+					console.log("haha2");
+					$('#exampleModalCenter .send-ppl input[type="checkbox"]:checked').each(function () {
+						console.log("uisnd");
+
+						var userId = $(this).closest('li').find('.n-pepls').data('user-id');
+						if (userId !== undefined && userId !== null) {
+
+							var message = " <a style='color: blue;' href='/UserProfile/Post?postId=" + postIdShare + "'>" + "Check out this link" + "</a>";
+
+							$.ajax({
+								url: "/Chat/SendShareMessage",
+								method: "POST",
+								data: {
+									recieverId: userId,
+									postId: postIdShare,
+									senderId: userIdValue
+								},
+								success: function (response) {
+									console.log("done");
+									sendMessageToUser(userId, message)
+								},
+								error: function (xhr, status, error) {
+									console.error(error);
+								}
+							});
+							
+
+						}
+						selectedIds.push(userId);
+					});
+					console.log(selectedIds);
+				
+					selectedIds = [];
+				});
+
+
+
+
+
+
+
+				//start connection
+				const connection = new signalR.HubConnectionBuilder()
+					.withUrl(`/chatHub?userId=${userIdValue}`)
+					.configureLogging(signalR.LogLevel.Information)
+					.build();
+
+
+				$(".peoples li").click(function () {
+
+					$(".default-chat").hide();
+					$(this).find(".unread-numbers").text("");
+
+					receiverId = $(this).data("user-id");
+					var listItem = $('#chatsnotification li[data-user-id="' + receiverId + '"]');
+					listItem.remove();
+
+					var currentCount = parseInt($('.numberOfchats').text()) || 1;
+
+					var newCount = currentCount - 1;
+					$('.numberOfchats').text(newCount + ' New chats');
+					$('._numberOfchats').text(newCount);
+
+					recieverPhoto = $(this).data("user-image");
+					const userName = $(this).find(".username").text();
+					$(".chatMessageText").val("");
+					showUserMessages(receiverId, userName);
+					scrollChatToBottom();
+				});
+
+				// send button for main chat
+				$("#sendMessageBtn").click(() => {
+					const message = $("#messageText").val(); // Get message from textarea
+
+					if (message.trim() !== "") {
+						console.log(receiverId + " " + "ewgforwo");
+
+						$.ajax({
+							url: "/Chat/SendMessage",
+							method: "POST",
+							data: {
+								recieverId: receiverId,
+								message: message,
+								senderId: userIdValue
+							},
+							success: function (response) {
+								sendMessageToUser(receiverId, message)
+
+								$("#messageText").val("");
+								appendMessage("you", message);
+								scrollChatToBottom();
+								var listItem = $('ul.peoples li[data-user-id="' + receiverId + '"]');
+
+								$('ul.peoples').prepend(listItem);
+								console.log("done");
+							},
+							error: function (xhr, status, error) {
+								console.error(error);
+							}
+						});
+
+
+
+					}
+				});
+				//load Chat notifications
+				$.ajax({
+					url: '/TimeLine/getMessageNotfications',
+					type: 'POST',
+					data: { userId: '@ViewBag.meID' },
+					success: function (data) {
+						$('#chatsnotification').empty();
+						data.forEach(function (notification) {
+							var shortMessage = notification.lastMessage.length > 10 ? notification.lastMessage.substring(0, 10) + '...' : notification.lastMessage;
+							var listItem = '<li data-user-id="' + notification.id + '">' +
+								'<a href="/Chat/Index" title="">' +
+								'<img src="/images/user/' + notification.image + '" alt="">' +
+								'<div class="mesg-meta">' +
+								'<h6>' + notification.firstName + ' ' + notification.lastName + '</h6>' +
+								'<span>' + shortMessage + '</span>' +
+								'<i>' + notification.messageDuration + ' ago</i>' +
+								'</div>' +
+								'</a>' +
+								'<span class="tag green">New</span>' +
+								'</li>';
+							$('#chatsnotification').append(listItem);
+						});
+						$('.numberOfchats').text(data.length + ' New chats');
+						$('._numberOfchats').text(data.length);
+
+					},
+					error: function (xhr, status, error) {
+						console.log('Error fetching messages:', error);
+					}
+				});
+
+
+				connection.on("ReceiveMessage", (user, message) => {
+
+					console.log(`Message received from ${user}: ${message}`);
+					var listItem = $('ul.peoples li[data-user-id="' + user + '"]');
+					console.log(listItem);
+					var unreadNumbers = listItem.find('.unread-numbers');
+					var currentCount = parseInt(unreadNumbers.text()) || 0;
+
+					$('ul.peoples').prepend(listItem);
+					if (receiverPopId == user) {
+
+						var messageHtml = '<li class="me">' +
+							'<div class="chat-thumb"><img src="/images/user/' + imagePop + '" alt=""></div>' +
+							'<div class="notification-event">' +
+							'<span class="chat-message-item">' + message + '</span>' +
+							'<span class="notification-date"><time datetime="' + + '" class="entry-date updated">' + message.formattedDateTime + '</time></span>' +
+							'</div>' +
+							'</li>';
+						$('#chattingArea2').append(messageHtml);
+						scrollChatToBottomPop();
+
+						$.ajax({
+							url: "/Chat/readMessage",
+							method: "POST",
+							data: {
+								recieverId: userIdValue,
+								senderId: user
+							},
+							success: function (response) {
+								console.log("done faroha2 jew");
+							},
+							error: function (xhr, status, error) {
+								console.error(error);
+							}
+						});
+
+
+						var listItem = $('#chatsnotification li[data-user-id="' + user + '"]');
+						if (listItem.length > 0) {
+
+							listItem.remove();
+							var currentCount = parseInt($('.numberOfchats').text()) || 0;
+
+							var newCount = currentCount - 1;
+							$('.numberOfchats').text(newCount + ' New chats');
+							$('._numberOfchats').text(newCount);
+
+						}
+
+					}
+					else if (receiverId == user) {
+						appendMessage("me", message);
+						scrollChatToBottom();
+
+						$.ajax({
+							url: "/Chat/readMessage",
+							method: "POST",
+							data: {
+								recieverId: userIdValue,
+								senderId: user
+							},
+							success: function (response) {
+								console.log("done faroha");
+							},
+							error: function (xhr, status, error) {
+								console.error(error);
+							}
+						});
+
+
+					}
+					else {
+						unreadNumbers.text(currentCount + 1);
+
+						var listItem = $('#chatsnotification li[data-user-id="' + user + '"]');
+						if (listItem.length > 0) {
+
+							var messageSpan = listItem.find('.mesg-meta span');
+							if (message.indexOf("<a") !== -1) {
+								messageSpan.text("shared a post with you");
+							} else {
+								messageSpan.text(message);
+							}
+
+							var messageTime = listItem.find('.mesg-meta i');
+							messageTime.text('Just now');
+							listItem.remove();
+							$('#chatsnotification').prepend(listItem);
+
+						}
+						else {
+							$.ajax({
+								url: '/TimeLine/getUserNotification',
+								type: 'POST',
+								data: { userId: user },
+								success: function (data) {
+									console.log(data)
+									if (message.indexOf("<a") !== -1) {
+										var shortMessage = "shared a post"
+
+									} else {
+										var shortMessage = message.length > 10 ? message.substring(0, 10) + '...' : message;
+									}
+									var listItem = '<li data-user-id="' + data.id + '">' +
+										'<a href="/Chat/Index" title="">' +
+										'<img src="/images/user/' + data.profileImage + '" alt="">' +
+										'<div class="mesg-meta">' +
+										'<h6>' + data.firstName + ' ' + data.lastName + '</h6>' +
+										'<span>' + shortMessage + '</span>' +
+										'<i>' + "Just Now" + ' </i>' +
+										'</div>' +
+										'</a>' +
+										'<span class="tag green">New</span>' +
+										'</li>';
+									$('#chatsnotification').prepend(listItem);
+
+
+
+									var currentCount = parseInt($('.numberOfchats').text()) || 0;
+
+									var newCount = currentCount + 1;
+									$('.numberOfchats').text(newCount + ' New chats');
+									$('._numberOfchats').text(newCount);
+
+								},
+								error: function (xhr, status, error) {
+									console.log('Error fetching user notification:', xhr.responseText || error || status);
+								}
+							});
+
+						}
+					}
+
+
+
+
+
+
+				});
+				// send message from profile button
+				$('#sendMessageProfile').click(function (event) {
+					console.log("A 22 s");
+					event.preventDefault();
+
+					receiverPopId = $(this).data('user-id');
+				    firstname = $(this).data('user-firstname');
+				    lastname = $(this).data('user-lastname');
+					imagePop = $(this).data('profile-image');
+					console.log(" hhuh "+receiverPopId);
+
+
+					$.ajax({
+						url: '/Chat/GetMessages',
+						type: 'GET',
+						data: {
+						receiverId: receiverPopId,
+							senderId: userIdValue
+						},
+						success: function (response) {
+							var chatList = $('#chattBox .chat-list ul');
+							chatList.empty(); // Clear existing messages
+						response.messages.forEach(function (message) {
+								var messageHtml = '<li class="' + (message.flag === 'me' ? 'you' : 'me') + '">' +
+									'<div class="chat-thumb"><img src="/images/user/' + message.image + '" alt=""></div>' +
+									'<div class="notification-event">' +
+									'<span class="chat-message-item">' + message.text + '</span>' +
+									'<span class="notification-date"><time datetime="' + + '" class="entry-date updated">' + message.formattedDateTime + '</time></span>' +
+									'</div>' +
+									'</li>';
+								chatList.append(messageHtml);
+							});
+							var fullName = firstname + ' ' + lastname;
+							$('.chat-head h6').text(fullName);
+							$('#chattBox').toggleClass('open'); // Toggle the 'open' class on the chat box
+
+							var listItem = $('#chatsnotification li[data-user-id="' + receiverPopId + '"]');
+							if (listItem.length > 0) {
+
+								listItem.remove();
+								var currentCount = parseInt($('.numberOfchats').text()) || 0;
+
+								var newCount = currentCount - 1;
+								$('.numberOfchats').text(newCount + ' New chats');
+								$('._numberOfchats').text(newCount);
+
+							}
+
+							scrollChatToBottomPop();
+						},
+						error: function (xhr, status, error) {
+							console.log('Error fetching messages:', error);
+						}
+					});
+
+				});
+
+
+				// send message from pob
+				$("#sendMessagePop").click(() => {
+					event.preventDefault();
+					const message = $("#areaPop").val(); // Get message from textarea
+
+					if (message.trim() !== "") {
+						console.log(receiverPopId + " " + "ewgforwo");
+
+						$.ajax({
+							url: "/Chat/SendMessage",
+							method: "POST",
+							data: {
+								recieverId: receiverPopId,
+								message: message,
+								senderId: userIdValue
+							},
+							success: function (response) {
+								sendMessageToUser(receiverPopId, message)
+
+								$("#areaPop").val("");
+
+								var messageHtml = '<li class="you">' +
+									'<div class="chat-thumb"><img src="/images/user/' + '@ViewBag.ProfileImage' + '" alt=""></div>' +
+									'<div class="notification-event">' +
+									'<span class="chat-message-item">' + message + '</span>' +
+									'<span class="notification-date"><time datetime="' + + '" class="entry-date updated">' + message.formattedDateTime + '</time></span>' +
+									'</div>' +
+									'</li>';
+								$('#chattingArea2').append(messageHtml);
+
+								scrollChatToBottomPop();
+								console.log("done");
+							},
+							error: function (xhr, status, error) {
+								console.error(error);
+							}
+						});
+					}
+				});
+
+				function scrollChatToBottomPop() {
+					var chatArea = document.getElementById("chattingArea2");
+					chatArea.scrollTop = chatArea.scrollHeight;
+				}
+
+				$('.close-mesage').click(function (event) {
+					event.preventDefault();
+					$('#chattBox').removeClass('open');
+					receiverPopId = 0;
+				});
+
+
+
+				function showUserMessages(receiverId, userName) {
+					//$(".default-chat").hide();
+					$(".message-text-container").show();
+					$(".conversation-head").show();
+
+
+				    $(".conversation-head a").attr("href", `/Profile/Index?id=${receiverId}`);
+					$(".conversation-head a span").text(`${userName}`);
+				    
+
+
+					const userPhoto = $(`.peoples li[data-user-id="${receiverId}"] figure img`).attr("src");
+					$(".conversation-head figure img").attr("src", userPhoto);
+				$.ajax({
+					url: '/Chat/GetMessages',
+					type: 'GET',
+					data: {
+						receiverId: receiverId, // Assuming receiverId is defined elsewhere
+						senderId: userIdValue   // Assuming userIdValue is defined elsewhere
+					},
+					success: function (response) {
+						var chatArea = $('#chattingArea');
+						chatArea.empty(); // Clear existing messages
+						if (response.flag === 1) {
+							response.messages.forEach(function (message) {
+								var messageHtml = `<li class="${message.flag === 'me' ? 'you' : 'me'}">
+										<figure><img src="/images/user/DefaultMan.jpg" alt=""></figure>
+								<p>${message.text}</p>
+							</li>`;
+								chatArea.append(messageHtml);
+								scrollChatToBottom(); // Assuming scrollChatToBottom() is defined elsewhere
+							});
+							$("#messageText").hide();
+							$("#sendMessageBtn").hide();
+							$("#blockMsg").show();
+						}
+					     else{
+							response.messages.forEach(function (message) {
+								var messageHtml = `<li class="${message.flag === 'me' ? 'you' : 'me'}">
+										<figure><img src="/images/user/${message.image}" alt=""></figure>
+										<p>${message.text}</p>
+									</li>`;
+								chatArea.append(messageHtml);
+								scrollChatToBottom(); // Assuming scrollChatToBottom() is defined elsewhere
+							});
+							$("#blockMsg").hide();
+							$("#messageText").show();
+							$("#sendMessageBtn").show();
+							
+						 }
+					},
+					error: function (xhr, status, error) {
+						console.log('Error fetching messages:', error);
+					}
+				});
+
+
+				}
+
+
+
+
+
+
+				connection.start().then(() => {
+					console.log('Connection started');
+				}).catch((err) => {
+					console.error(err.toString());
+				});
+
+				function sendMessageToUser(receiverId, message) {
+					connection.invoke("SendMessageToUser", receiverId, message, userIdValue).catch((err) => {
+						console.error(err.toString());
+					});
+				}
+
+
+				// main chat
+				function appendMessage(user, message) {
+					if (user === "me") {
+						var photoSrc = recieverPhoto;
+					} else {
+						var photoSrc = '/@ViewBag.ProfileImage';
+					}
+					$(".chatting-area").append(`<li class="${user.toLowerCase()}"><figure><img src="/images/user/${photoSrc}" alt="" style="width:35px;height:30px;"></figure><p>${message}</p></li>`);
+				}
+				//main chat
+				function scrollChatToBottom() {
+					var chatArea = document.getElementById("chattingArea");
+					chatArea.scrollTop = chatArea.scrollHeight;
+				}
+
+
+			});
+        </script>
+        
+		<script>
+			$(document).ready(function () {
+				//remove of followers
+				$('.remove-btn').on('click', function (event) {
+					event.preventDefault();
+					var followerId = $(this).data('followerid');
+					var followerCount = parseInt($('#followerCount').text());
+					$(this).closest('.unique-li-class').remove();
+					var currentCount = parseInt($('#followerCountMain').text().split(' ')[0]);
+					$('#followerCountMain').text((currentCount - 1) + ' Followers')
+
+					$('#followerCount').text(followerCount - 1);
+					$.ajax({
+						url: '@Url.Action("RemoveFollower", "UserProfile")',
+						type: 'POST',
+						data: { FollowerId: followerId },
+						success: function (response) {
+							if (response.success) {
+								console.log("ok");
+							} else {
+								console.log("not ok");
+
+							}
+						},
+						error: function (xhr, status, error) {
+
+						}
+					});
+
+				});
+				//unfollow of following
+				$('.unfollow-btn').on('click', function (event) {
+					// Prevent the default behavior of the anchor tag
+					event.preventDefault();
+					var followingId = $(this).data('followingid');
+					var followingCount = parseInt($('#followingCount').text());
+					$(this).closest('.unique-li-class').remove();
+					$('#friend-' + followingId).remove();
+
+					$('#followingCount').text(followingCount - 1);
+					$.ajax({
+						url: '@Url.Action("RemoveFollowing", "UserProfile")',
+						type: 'POST',
+						data: { FollowingId: followingId },
+						success: function (response) {
+							if (response.success) {
+								console.log("ok");
+							} else {
+								console.log("ok");
+							}
+						},
+						error: function (xhr, status, error) {
+
+						}
+					});
+				});
+
+				// switch
+				$('.follow-btn').on('click', function (event) {
+					// Prevent the default behavior of the anchor tag
+					event.preventDefault();
+
+					// Find the <span> element inside the parent <div> and toggle its text
+					var spanElement = $(this).closest('.pepl-info').find('.follow-status');
+					spanElement.text(spanElement.text() == 'Following' ? 'Follow' : 'Following');
+				});
+			});
+        </script>
+
+
+
+
+
+
+
+
+
+
+        <script>
+            // Get the FarahModal element
+            var FarahModal = document.getElementById('FarahModal');
+
+            // Get the image element inside the modal
+            var scannedImage = document.getElementById('scannedImage');
+
+            // Get the file input element
+            var fileInput = document.getElementById('fileInput');
+
+            // When the file input changes (image is uploaded)
+            fileInput.addEventListener('change', function () {
+                var file = this.files[0];
+
+                console.log("Image path:", file);
+                if (file) {
+                    // Show the modal
+                    FarahModal.style.display = 'block';
+
+                    // Set the image source to the uploaded image
+                    scannedImage.src = URL.createObjectURL(file);
+
+                    // Wait for the image to load
+                    scannedImage.onload = function () {
+                        // Simulate a delay before hiding the modal (scanning effect)
+                        setTimeout(function () {
+                            // Hide the modal
+                            FarahModal.style.display = 'none';
+
+                            // Submit the form
+                            document.getElementById('searchForm').submit();
+                        }, 2000); // 2 seconds delay (adjust as needed)
+                    };
+                }
+            });
+
+            // Close the modal
+            function closeModal() {
+                FarahModal.style.display = 'none';
+            }
+
+            function triggerFileInput() {
+                // Trigger the file input click
+                document.getElementById('fileInput').click();
+            }
+        </script>
+		<script>
+		$(document).ready(function() {
+    $('#searchInput').on('keyup', function() {
+        let query = $(this).val();
+        if (query.length > 0) { // Start searching after 3 characters
+            $.ajax({
+                url: '/Search/Index2', // URL of your search action
+                type: 'POST',
+                data: { searchTerm: query },
+                success: function(data) {
+							
+                    $('#searchResults').html(data);
+                },
+                error: function() {
+                    $('#searchResults').html('<p>An error has occurred</p>');
+                }
+            });
+        } else {
+				
+            $('#searchResults').html('');
+        }
+    });
+});
+
+function triggerFileInput() {
+    $('#fileInput').click();
+}
+
+		</script>
+
+
+	<script>
+		document.getElementById('aimage').addEventListener('click', function (event) {
+			event.preventDefault(); // Prevent the default action of the anchor tag
+			window.location.href = '/UserProfile/Index'; // Replace with your desired URL
+		});
+	</script>
+        @RenderSection("scripts", false)
+</body>
+
+</html>
